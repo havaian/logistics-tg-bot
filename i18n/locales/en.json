@@ -1,0 +1,22 @@
+{
+  "start": {
+    "welcome": "Welcome, {{firstName}}! 👋\n\nThis is a Telegram bot template. You can customize it for your needs.\n\nAvailable commands:\n/help - Help\n/language - Change language"
+  },
+  "help": {
+    "message": "🤖 Help\n\nThis is a basic Telegram bot template.\n\nAvailable commands:\n/start - Start working with the bot\n/help - Show this message\n/language - Select language\n\nYou can add your own commands and features by editing the bot code."
+  },
+  "language": {
+    "select": "🌐 Select language:",
+    "changed": "✅ Language successfully changed!"
+  },
+  "errors": {
+    "general": "An error occurred while processing your request. Please try again later."
+  },
+  "messages": {
+    "default_response": "Hello! This is a bot template. Add your message handling logic in the index.js file."
+  },
+  "buttons": {
+    "back": "◀️ Back",
+    "help": "❓ Help"
+  }
+}

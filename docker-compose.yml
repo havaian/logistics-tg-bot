@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  # Tg bot
+  bot:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: tg_bot
+    restart: always
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:${MONGODB_PORT}/${MONGO_DATABASE}
+    env_file:
+      - ./.env
+    volumes:
+      # Mount logs directory to host machine for persistent log storage
+      - ./logs:/app/logs
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge

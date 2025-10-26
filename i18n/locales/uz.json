@@ -1,0 +1,22 @@
+{
+  "start": {
+    "welcome": "Xush kelibsiz, {{firstName}}! 👋\n\nBu Telegram bot shabloni. Uni o'z ehtiyojlaringiz uchun moslashtirishingiz mumkin.\n\nMavjud buyruqlar:\n/help - Yordam\n/language - Tilni o'zgartirish"
+  },
+  "help": {
+    "message": "🤖 Yordam\n\nBu oddiy Telegram bot shabloni.\n\nMavjud buyruqlar:\n/start - Bot bilan ishlashni boshlash\n/help - Ushbu xabarni ko'rsatish\n/language - Tilni tanlash\n\nBot kodini tahrirlash orqali o'z buyruqlaringiz va funksiyalaringizni qo'shishingiz mumkin."
+  },
+  "language": {
+    "select": "🌐 Tilni tanlang:",
+    "changed": "✅ Til muvaffaqiyatli o'zgartirildi!"
+  },
+  "errors": {
+    "general": "So'rovingizni qayta ishlashda xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring."
+  },
+  "messages": {
+    "default_response": "Salom! Bu bot shabloni. index.js fayliga xabarlarni qayta ishlash mantiqini qo'shing."
+  },
+  "buttons": {
+    "back": "◀️ Orqaga",
+    "help": "❓ Yordam"
+  }
+}
