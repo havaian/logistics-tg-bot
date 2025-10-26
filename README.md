@@ -1,93 +1,265 @@
-# tg-bot
+# Логистический Бот - Техническое Описание Проекта
 
+## Обзор Проекта
 
+Telegram-бот для соединения заказчиков грузоперевозок с водителями, решающий проблему хаоса в существующих логистических группах через автоматический мэтчинг пользователей и встроенную систему платежей.
 
-## Getting started
+## Функциональная Архитектура
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### Регистрация Пользователей
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+**Процесс Onboarding:**
+1. Пользователь нажимает `/start`
+2. Выбор языка интерфейса
+3. Заполнение регистрационной анкеты:
+   - Имя и фамилия
+   - Год рождения
+   - Паспортные данные (опционально, для повышения доверия)
+   - Роль: **Водитель** или **Посредник (Заказчик)**
+   - Для водителей: модель автомобиля и категория транспорта
+   - Номер телефона для связи
 
-## Add your files
+**Типы Пользователей:**
+- **Заказчики (Посредники)** - создают заявки на перевозку грузов
+- **Водители** - выполняют доставку грузов по заявкам
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+### Создание и Управление Грузами
 
+**Форма Создания Груза:**
 ```
-cd existing_repo
-git remote add origin https://gitlab.ytech.space/logistics/tg-bot.git
-git branch -M main
-git push -uf origin main
+- Откуда: [локация погрузки] (обязательно)
+- Куда: [локация разгрузки] (опционально)
+- Дата выгрузки: [дата/время] (опционально, по умолчанию - ежедневный поток)
+- Цена за груз: [сумма] (для заказчиков)
+- Описание груза: [детали]
+- Контактный номер: [телефон]
 ```
 
-## Integrate with your tools
+**Автоматическая Публикация:**
+- Бот автоматически публикует заявку в связанную Telegram-группу
+- Включает контактные данные для прямой связи
+- Прикрепляет кнопку "Забронировать заказ" для быстрого отклика
 
-- [ ] [Set up project integrations](https://gitlab.ytech.space/logistics/tg-bot/-/settings/integrations)
+### Алгоритм Мэтчинга
 
-## Collaborate with your team
+**Критерии Подбора:**
+1. **Географическая близость** - точка "Откуда" должна максимально соответствовать локации водителя
+2. **Совместимость маршрутов** - направление движения водителя
+3. **Рейтинг и репутация** - история успешных сделок
+4. **Доступность** - текущий статус водителя
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+**Результат Мэтчинга:**
+- Система показывает топ-5 или топ-10 лучших совпадений
+- Ранжирование по релевантности и рейтингу
+- Возможность связаться напрямую через бота
 
-## Test and Deploy
+### Система Ограничений
 
-Use the built-in continuous integration in GitLab.
+**Контроль Активных Заказов:**
+- **Начальный этап**: водитель может принять только 1 активный заказ
+- **Расширенный режим**: до 5 активных грузов для опытных пользователей
+- **Запланированные заказы**: возможность бронирования будущих перевозок
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+**Предотвращение Мошенничества:**
+- Ограничение одновременных заказов снижает риски
+- Система отзывов и рейтингов после каждой сделки
+- Возможность жалоб и блокировки недобросовестных пользователей
 
-***
+### Жизненный Цикл Сделки
 
-# Editing this README
+**1. Создание Заявки**
+```
+Заказчик → Заполнение формы → Публикация → Ожидание откликов
+```
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+**2. Поиск Исполнителя**
+```
+Мэтчинг → Показ вариантов → Выбор водителя → Связь
+```
 
-## Suggestions for a good README
+**3. Выполнение Заказа**
+```
+Договоренности → Забор груза → Доставка → Подтверждение
+```
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+**4. Закрытие Сделки**
+```
+Кнопка "Закрыть сделку" → Взаимные отзывы → Завершение
+```
 
-## Name
-Choose a self-explaining name for your project.
+**Автоматические Напоминания:**
+- Если сделка не закрыта, бот отправляет напоминания: "Получилась ли сделка?"
+- Периодические уведомления до получения статуса завершения
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## Техническая Архитектура
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### Технологический Стек
+```
+├── Backend Framework
+│   ├── Node.js (Runtime Environment)
+│   ├── GrammyJS (Telegram Bot Framework)
+│   └── Express.js (Web Server)
+├── Базы Данных
+│   ├── MongoDB (Основное хранилище)
+│   └── Redis (Кэш и сессии)
+├── Внешние API
+│   ├── Beepul API (Платежная система)
+│   ├── Telegram Bot API
+│   └── Geocoding API (Обработка локаций)
+└── Инфраструктура
+    ├── Docker & Docker Compose
+    └── Развертывание на личном сервере
+```
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+### Структура Данных
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+**Коллекция Пользователей**
+```javascript
+{
+  telegramId: Number,
+  profile: {
+    firstName: String,
+    lastName: String,
+    birthYear: Number,
+    passportData: String, // опционально
+    phoneNumber: String,
+    role: String // 'driver' | 'client'
+  },
+  driverInfo: {
+    vehicleModel: String,
+    vehicleCategory: String,
+    preferredRoutes: Array
+  },
+  reputation: {
+    rating: Number,
+    completedDeals: Number,
+    reviews: Array
+  },
+  activeOrders: Number,
+  maxOrders: Number // 1 для новичков, до 5 для опытных
+}
+```
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+**Коллекция Заказов**
+```javascript
+{
+  clientId: ObjectId,
+  driverId: ObjectId, // null до назначения
+  cargo: {
+    from: String,
+    to: String,
+    fromCoordinates: Object,
+    toCoordinates: Object,
+    scheduledDate: Date,
+    description: String,
+    price: Number
+  },
+  status: String, // 'active' | 'matched' | 'in_progress' | 'completed'
+  publishedToGroup: Boolean,
+  autoReminders: Array,
+  createdAt: Date
+}
+```
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+### Система Платежей
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+**Интеграция с Beepul:**
+- Встроенные платежи через Telegram Bot API
+- Эскроу-механизм для безопасности транзакций
+- Поддержка международных переводов
+- Автоматическое удержание и освобождение средств
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+**Модель Монетизации:**
+1. **Бесплатный период** - первоначальное привлечение пользователей
+2. **Подписочная модель** - месячная подписка (~12,000 сум)
+3. **Низкий порог входа** - символическая стоимость для массового использования
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+### Система Уведомлений
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+**Типы Уведомлений:**
+- Новые подходящие заказы для водителей
+- Отклики на заявки для заказчиков
+- Напоминания о незакрытых сделках
+- Запросы на оценку после завершения
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+**Каналы Доставки:**
+- Telegram Bot сообщения
+- Push-уведомления (планируется)
+- Email-рассылка (опционально)
 
-## License
-For open source projects, say how it is licensed.
+## Продвижение и Маркетинг
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+### Стратегия Привлечения Пользователей
+
+**Telegram-маркетинг:**
+- Размещение ссылок в логистических чатах и каналах
+- Партнерство с существующими группами перевозчиков
+- Сотрудничество со школами логистики
+
+**Рекламные Кампании:**
+- Таргетированная реклама в Telegram
+- Сарафанное радио через раннюю пользовательскую базу
+- Рассылки активным пользователям платформы
+
+### Развитие Сообщества
+
+**Геймификация:**
+- Система рейтингов и лидерборды
+- Бейджи за успешные сделки
+- Бонусы для активных пользователей
+- Программа лояльности для водителей
+
+## Безопасность и Доверие
+
+### Верификация Пользователей
+
+**Многоуровневая Проверка:**
+- Телефонная верификация через Telegram
+- Опциональная паспортная идентификация
+- Система отзывов и рейтингов
+- Возможность жалоб и модерации
+
+**Ответственность Сторон:**
+- Заказчик отвечает за проверку легитимности водителя
+- Водитель отвечает за проверку заказчика
+- Платформа выступает гарантом успешности сделки
+
+### Предотвращение Мошенничества
+
+**Контрольные Механизмы:**
+- Ограничение активных заказов (1-2 максимум)
+- Обязательные отзывы после каждой сделки
+- Система жалоб и блокировок
+- Мониторинг подозрительной активности
+
+## Будущее Развитие
+
+### Дополнительные Функции
+
+**Web/Mini App:**
+- Расширенная аналитика для пользователей
+- Детальная история сделок
+- Продвинутые фильтры поиска
+- Интеграция с внешними сервисами
+
+**Мобильное Приложение:**
+- GPS-трекинг доставок
+- Push-уведомления
+- Офлайн-режим просмотра заказов
+- Интеграция с картами и навигацией
+
+### Масштабирование
+
+**Расширение Функционала:**
+- Загрузка фотографий и документов
+- Страхование грузов
+- Многоязычная поддержка
+- Интеграция с логистическими системами
+
+**Географическое Расширение:**
+- Поддержка международных перевозок
+- Локализация для разных регионов
+- Интеграция с местными платежными системами
+- Соответствие местному законодательству
+
+Проект представляет собой комплексное решение для цифровизации логистических процессов с акцентом на пользовательский опыт, безопасность сделок и простоту использования в экосистеме Telegram.
