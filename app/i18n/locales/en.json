@@ -1,0 +1,162 @@
+{
+  "start": {
+    "welcome": "Welcome to LogisticBot! 🚛\n\nI'll help you find cargo orders for transportation or find drivers to deliver your cargo.\n\nPlease complete a quick registration to get started.",
+    "choose_role": "👤 Choose your role:",
+    "registration_completed": "✅ Registration completed!\n\nNow you can use all bot features."
+  },
+  "registration": {
+    "role_driver": "🚛 Driver",
+    "role_client": "📦 Client (Broker)",
+    "role_selected": "Great! You selected role: {{role}}",
+    "enter_first_name": "👤 Enter your first name:",
+    "enter_last_name": "👤 Enter your last name:",
+    "enter_birth_year": "📅 Enter your birth year (e.g.: 1990):",
+    "enter_vehicle_model": "🚗 Enter your vehicle model:",
+    "choose_vehicle_category": "🚛 Choose vehicle category:",
+    "enter_current_location": "📍 Enter your current location (city):",
+    "share_contact": "📱 Share your contact for communication:",
+    "contact_button": "📱 Share Contact",
+    "invalid_year": "❌ Please enter a valid year (e.g.: 1990)",
+    "vehicle_categories": {
+      "light": "🚐 Light Vehicle",
+      "medium": "🚚 Medium Truck",
+      "heavy": "🚛 Heavy Truck",
+      "special": "🏗️ Special Equipment"
+    }
+  },
+  "menu": {
+    "main_driver": "🚛 Main Menu - Driver",
+    "main_client": "📦 Main Menu - Client",
+    "find_orders": "🔍 Find Orders",
+    "my_orders": "📋 My Orders",
+    "create_order": "➕ Create Order",
+    "my_profile": "👤 My Profile",
+    "settings": "⚙️ Settings"
+  },
+  "orders": {
+    "create_title": "📦 Creating New Order",
+    "enter_from": "📍 Where to pick up cargo? (required)\n\nEnter city or address:",
+    "enter_to": "📍 Where to deliver cargo? (optional)\n\nEnter city or address, or press 'Skip':",
+    "enter_date": "📅 Pickup date and time (optional)\n\nEnter date in DD.MM.YYYY format or press 'Skip':",
+    "enter_price": "💰 Transportation price in sum (optional)\n\nEnter amount or press 'Skip':",
+    "enter_description": "📝 Cargo description (optional)\n\nDescribe what needs to be transported or press 'Skip':",
+    "enter_weight": "⚖️ Cargo weight (optional)\n\nEnter approximate weight or press 'Skip':",
+    "enter_contact_name": "👤 Contact person (optional)\n\nEnter contact person name or press 'Skip':",
+    "confirm_order": "✅ Confirm order creation:\n\n{{orderSummary}}\n\nIs everything correct?",
+    "order_created": "✅ Order created and published!\n\nYour order #{{orderId}} has been placed in the system. Drivers will be able to see it and contact you.",
+    "no_orders": "📭 You don't have any orders yet",
+    "no_orders_found": "🔍 No suitable orders found in your region",
+    "order_details": "📦 Order #{{orderId}}\n\n📍 From: {{from}}\n📍 To: {{to}}\n📅 Date: {{date}}\n💰 Price: {{price}}\n📝 Description: {{description}}\n👤 Contact: {{contact}}\n\n📊 Status: {{status}}",
+    "interested_button": "✋ Show Interest",
+    "already_interested": "✅ You already showed interest in this order",
+    "interest_sent": "✅ Your response has been sent to the client!",
+    "cannot_take_more": "❌ You cannot take more orders. Complete your current orders.",
+    "skip": "⏭️ Skip"
+  },
+  "profile": {
+    "title": "👤 Your Profile",
+    "info": "📋 Information:\n👤 {{fullName}}\n📅 Birth year: {{birthYear}}\n🚛 Role: {{role}}\n📱 Phone: {{phone}}\n📍 Location: {{location}}\n\n📊 Statistics:\n⭐ Rating: {{rating}}/5\n✅ Completed deals: {{completedDeals}}\n📋 Active orders: {{activeOrders}}/{{maxOrders}}",
+    "edit_location": "📍 Change Location",
+    "vehicle_info": "\n\n🚗 Vehicle Information:\n🚛 Model: {{vehicleModel}}\n📦 Category: {{vehicleCategory}}"
+  },
+  "matching": {
+    "found_drivers": "🔍 Suitable drivers found:\n\n{{drivers}}",
+    "no_drivers": "😔 No suitable drivers found",
+    "driver_info": "🚛 {{name}}\n⭐ Rating: {{rating}}/5\n🚗 {{vehicle}}\n📍 {{location}}\n\n",
+    "contact_driver": "📱 Contact"
+  },
+  "notifications": {
+    "new_order_available": "🆕 New order available in your region!\n\n{{orderSummary}}",
+    "driver_interested": "👋 A driver showed interest in your order!\n\n🚛 {{driverName}}\n⭐ Rating: {{rating}}/5\n📱 Phone: {{phone}}",
+    "order_reminder": "⏰ Reminder about order #{{orderId}}\n\nDid the deal work out? Please update the order status."
+  },
+  "admin": {
+    "access_denied": "❌ Access denied. Admin privileges required.",
+    "panel_title": "🔧 Admin Panel\n\nSelect an option:",
+    "groups_list": "📋 Groups List",
+    "add_group": "➕ Add Group",
+    "groups_settings": "⚙️ Groups Settings",
+    "reload_config": "🔄 Reload Config",
+    "statistics": "📊 Statistics",
+    "error_menu": "❌ Error showing admin menu",
+    "no_groups_configured": "📋 Groups List\n\n❌ No groups configured",
+    "configured_groups": "📋 Configured Groups:\n\n",
+    "group_status_active": "✅",
+    "group_status_inactive": "❌",
+    "group_region": "📍 Region: {{region}}",
+    "group_id": "🆔 ID: {{id}}",
+    "group_description": "📝 {{description}}",
+    "error_loading_groups": "❌ Error loading groups list",
+    "settings_title": "⚙️ Groups Settings:\n\n",
+    "auto_posting": "🔄 Auto Posting: {{status}}",
+    "max_groups_per_order": "📊 Max Groups per Order: {{count}}",
+    "posting_delay": "⏱️ Posting Delay: {{delay}}ms",
+    "retry_failed_posts": "🔁 Retry Failed Posts: {{status}}",
+    "enable_auto_posting": "✅ Enable Auto Posting",
+    "disable_auto_posting": "❌ Disable Auto Posting",
+    "error_loading_settings": "❌ Error loading settings",
+    "auto_posting_enabled": "Auto posting enabled",
+    "auto_posting_disabled": "Auto posting disabled",
+    "error_updating_setting": "❌ Error updating setting",
+    "config_reloaded": "✅ Config reloaded: {{groupsCount}} groups, {{activeGroups}} active",
+    "error_reloading_config": "❌ Error reloading config",
+    "add_group_instructions": "➕ Add New Group\n\nTo add a group:\n1. Add this bot to your group as admin\n2. Send a message in the group\n3. Forward that message to me\n\nOr use the command format:\n/addgroup GROUP_ID \"Group Name\" \"region\"",
+    "error_add_group": "❌ Error starting add group process",
+    "stats_title": "📊 Bot Statistics:\n\n",
+    "stats_users": "👥 Users:\n",
+    "stats_total": "Total: {{count}}",
+    "stats_registered": "Registered: {{count}}",
+    "stats_drivers": "Drivers: {{count}}",
+    "stats_clients": "Clients: {{count}}",
+    "stats_orders": "📦 Orders:\n",
+    "stats_active": "Active: {{count}}",
+    "stats_completed": "Completed: {{count}}",
+    "stats_groups": "📋 Groups:\n",
+    "stats_active_groups": "Active: {{count}}",
+    "error_loading_stats": "❌ Error loading statistics",
+    "error_processing_command": "❌ Error processing admin command",
+    "addgroup_invalid_format": "❌ Invalid format. Use: /addgroup GROUP_ID \"Group Name\" \"region\"",
+    "group_added_success": "✅ Group added successfully:\n📋 {{groupName}}\n📍 Region: {{region}}\n🆔 ID: {{groupId}}",
+    "error_adding_group": "❌ Error adding group"
+  },
+  "help": {
+    "message": "🤖 LogisticBot Help\n\n🚛 For drivers:\n• Find orders in your region\n• Respond to interesting orders\n• Manage active orders\n\n📦 For clients:\n• Create transportation orders\n• View driver responses\n• Find suitable drivers\n\n💡 Additional commands:\n/profile - Your profile\n/language - Change language\n/help - This help"
+  },
+  "settings": {
+    "title": "⚙️ Settings\n\nUnder development..."
+  },
+  "messages": {
+    "use_menu": "Use the menu buttons for navigation:"
+  },
+  "language": {
+    "select": "🌐 Select language:",
+    "changed": "✅ Language successfully changed!"
+  },
+  "errors": {
+    "general": "❌ An error occurred. Please try again later.",
+    "registration_required": "❌ Registration must be completed to use this feature.",
+    "invalid_input": "❌ Invalid input. Please try again.",
+    "order_not_found": "❌ Order not found.",
+    "access_denied": "❌ You don't have access to this order."
+  },
+  "buttons": {
+    "back": "◀️ Back",
+    "help": "❓ Help",
+    "yes": "✅ Yes",
+    "no": "❌ No",
+    "cancel": "❌ Cancel",
+    "confirm": "✅ Confirm",
+    "main_menu": "🏠 Main Menu",
+    "enabled": "✅ Enabled",
+    "disabled": "❌ Disabled",
+    "all_regions": "All",
+    "reload": "🔄 Reload"
+  },
+  "status": {
+    "active": "🟢 Active",
+    "matched": "🟡 Driver Found",
+    "in_progress": "🔵 In Progress",
+    "completed": "✅ Completed",
+    "cancelled": "❌ Cancelled"
+  }
+}

@@ -2,24 +2,16 @@ const User = require('../models/user');
 
 const detectUserLanguage = async (ctx, next) => {
     try {
-        let userLocale = 'ru'; // Default
+        let userLocale = 'ru'; // Default to Russian
 
-        // Force Russian for admin and student chats
-        if (ctx.chat && (
-            ctx.chat.id.toString() === process.env.ADMIN_CHAT_ID ||
-            ctx.chat.id.toString() === process.env.STUDENT_CHAT_ID
-        )) {
-            ctx.locale = 'ru';
-            return next();
-        }
-
-        // Only detect language for private chats
-        if (ctx.from && ctx.chat && ctx.chat.type === 'private') {
+        // Detect language for private chats and groups
+        if (ctx.from) {
+            // First, try to get language from user profile (if user exists)
             const user = await User.findOne({ telegramId: ctx.from.id });
             if (user && user.language) {
                 userLocale = user.language;
             } else {
-                // Detect from Telegram language_code
+                // Detect from Telegram language_code if no user profile or language set
                 const telegramLocale = ctx.from.language_code;
 
                 if (telegramLocale) {
@@ -27,16 +19,15 @@ const detectUserLanguage = async (ctx, next) => {
                     const localeMap = {
                         'ru': 'ru',
                         'uz': 'uz',
-                        'en': 'en',
-                        'kk': 'kk'
+                        'en': 'en'
                     };
 
                     const detectedLocale = localeMap[telegramLocale.split('-')[0]];
                     if (detectedLocale) {
                         userLocale = detectedLocale;
 
-                        // Save detected language to user profile
-                        if (user) {
+                        // Save detected language to user profile (only for private chats)
+                        if (user && ctx.chat && ctx.chat.type === 'private') {
                             user.language = userLocale;
                             await user.save();
                         }

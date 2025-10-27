@@ -1,0 +1,9 @@
+{
+  "logistics_groups": [],
+  "settings": {
+    "auto_posting_enabled": true,
+    "max_groups_per_order": 3,
+    "posting_delay_ms": 1000,
+    "retry_failed_posts": true
+  }
+}

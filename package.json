@@ -1,12 +1,14 @@
 {
-  "name": "legalbot",
+  "name": "logistics-bot",
   "version": "1.0.0",
-  "description": "",
+  "description": "Telegram logistics bot for connecting cargo clients with drivers",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": ["telegram", "bot", "logistics", "cargo", "shipping"],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -16,5 +18,11 @@
     "telegraf": "^4.16.3",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
