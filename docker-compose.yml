@@ -6,12 +6,10 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    container_name: tg_bot
+    container_name: m-m-logistics-bot
     restart: always
-    depends_on:
-      - mongodb
     environment:
-      - MONGO_URI=mongodb://mongodb:${MONGODB_PORT}/${MONGO_DATABASE}
+      - MONGO_URI=mongodb://${MONGO_USER}:${MONGO_PASS}:${MONGO_HOST}/${MONGO_DB}
     env_file:
       - ./.env
     volumes:
