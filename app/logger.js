@@ -73,7 +73,7 @@ const consoleFormat = winston.format.combine(
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
   format: logFormat,
-  defaultMeta: { service: 'legalbot' },
+  defaultMeta: { service: process.env.BOT_USERNAME },
   transports: [
     // Error logs - separate file for errors only
     new DailyRotateFile({
