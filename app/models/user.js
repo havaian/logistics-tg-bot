@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
         },
         lastName: {
             type: String,
-            required: true,
+            required: false,
             trim: true
         },
         birthYear: {
@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
         role: {
             type: String,
             enum: ['driver', 'client'],
-            required: true
+            required: false
         }
     },
 
