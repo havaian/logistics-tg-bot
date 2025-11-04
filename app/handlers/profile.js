@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const Order = require('../models/order');
 const { t } = require('../utils/i18nHelper');
-const { logAction } = require('../logger');
+const { logAction, logWarn } = require('../logger');
 const {
     getBackButton,
     formatUserInfo,
@@ -308,7 +308,7 @@ const selectDriverForOrder = async (ctx, orderId, driverId) => {
                 `✅ Вы назначены на заказ!\n\n${order.summary}\n\nСвяжитесь с заказчиком: ${user.profile.phoneNumber || 'См. профиль'}`
             );
         } catch (error) {
-            console.warn('Failed to notify driver:', error.message);
+            logWarn('Failed to notify driver:', error.message);
         }
 
         // Update the message
@@ -389,7 +389,7 @@ const completeOrder = async (ctx, orderId) => {
                     `⏰ Напоминание о заказе #${order._id.toString().slice(-6)}\n\nВторая сторона подтвердила завершение сделки. Пожалуйста, также подтвердите завершение в своих заказах.`
                 );
             } catch (error) {
-                console.warn('Failed to notify other party:', error.message);
+                logWarn('Failed to notify other party:', error.message);
             }
         }
 

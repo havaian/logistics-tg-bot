@@ -32,7 +32,7 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
-        logInfo('Connected to MongoDB', { database: process.env.MONGO_URI.split('/').pop() });
+        logInfo('✅ MongoDB', { database: process.env.MONGO_URI.split('/').pop() });
     })
     .catch(err => {
         logError(err, { context: 'MongoDB connection failed' });

@@ -106,11 +106,13 @@ const handleRegistrationStep = async (ctx) => {
         const messageText = ctx.message.text;
 
         if (user.registrationCompleted) {
-            return false; // Registration already completed
+            return false;
         }
 
         switch (user.registrationStep) {
             case 'personal_info':
+            case 'last_name':
+            case 'birth_year':
                 return await handlePersonalInfo(ctx, user, messageText);
             case 'vehicle_info':
                 return await handleVehicleInfo(ctx, user, messageText);
@@ -129,20 +131,22 @@ const handleRegistrationStep = async (ctx) => {
  */
 const handlePersonalInfo = async (ctx, user, messageText) => {
     try {
-        if (!user.profile.firstName || user.profile.firstName === ctx.from.first_name) {
-            // Collecting first name
+        // Use specific sub-steps for personal info
+        if (!user.personalInfoStep) user.personalInfoStep = 'first_name';
+
+        if (user.personalInfoStep === 'first_name') {
             user.profile.firstName = messageText.trim();
+            user.personalInfoStep = 'last_name';
             await user.save();
             await ctx.reply(t(ctx, 'registration.enter_last_name'));
             return true;
-        } else if (!user.profile.lastName || user.profile.lastName === ctx.from.last_name) {
-            // Collecting last name
+        } else if (user.personalInfoStep === 'last_name') {
             user.profile.lastName = messageText.trim();
+            user.personalInfoStep = 'birth_year';
             await user.save();
             await ctx.reply(t(ctx, 'registration.enter_birth_year'));
             return true;
-        } else if (!user.profile.birthYear) {
-            // Collecting birth year
+        } else if (user.personalInfoStep === 'birth_year') {
             const year = parseInt(messageText);
             const currentYear = new Date().getFullYear();
 
@@ -152,15 +156,14 @@ const handlePersonalInfo = async (ctx, user, messageText) => {
             }
 
             user.profile.birthYear = year;
+            user.personalInfoStep = null; // Clear sub-step
             await user.save();
 
             if (user.isDriver()) {
-                // Driver needs vehicle info
                 user.registrationStep = 'vehicle_info';
                 await user.save();
                 await ctx.reply(t(ctx, 'registration.enter_vehicle_model'));
             } else {
-                // Client goes to contact step
                 user.registrationStep = 'contact';
                 await user.save();
                 await requestContact(ctx);
