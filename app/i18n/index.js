@@ -14,7 +14,7 @@ class I18n {
 
         // Check if locales directory exists
         if (!fs.existsSync(localesDir)) {
-            global.logger.logWarn('⚠️ Locales directory not found, creating it...');
+            global.logger.logWarn('Locales directory not found, creating it...');
             fs.mkdirSync(localesDir, { recursive: true });
             return;
         }
@@ -27,9 +27,9 @@ class I18n {
                 const filePath = path.join(localesDir, file);
                 try {
                     this.locales[locale] = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-                    global.logger.logInfo(`✅ Locale: ${locale}`);
+                    global.logger.logInfo(`Locale: ${locale}`);
                 } catch (error) {
-                    global.logger.logError(`❌ Error loading locale ${locale}:`, error.message);
+                    global.logger.logError(`Error loading locale ${locale}:`, error.message);
                 }
             }
         });
@@ -40,7 +40,7 @@ class I18n {
         const value = this.getNestedValue(messages, key);
 
         if (!value) {
-            global.logger.logWarn(`⚠️ Translation missing: ${key} for locale: ${locale}`);
+            global.logger.logWarn(`Translation missing: ${key} for locale: ${locale}`);
             return key; // Return key as fallback
         }
 

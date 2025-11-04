@@ -1,22 +1,27 @@
 {
   "start": {
-    "welcome": "LogisticBot ga xush kelibsiz! 🚛\n\nMen sizga yuk tashish uchun buyurtmalar topishga yoki yukingizni yetkazib berish uchun haydovchilar topishga yordam beraman.\n\nIshni boshlash uchun tezkor ro'yxatdan o'ting.",
+    "welcome": "LogisticBot'ga xush kelibsiz! 🚛\n\nMen sizga tashish uchun yuk topishda yoki yuklaringizni yetkazib berish uchun haydovchi topishda yordam beraman.\n\nBoshlash uchun tezkor ro'yxatdan o'ting.",
+    "welcome_back": "🏠 Qaytganingiz bilan! Asosiy menyuga xush kelibsiz.",
     "choose_role": "👤 Rolingizni tanlang:",
-    "registration_completed": "✅ Ro'yxatdan o'tish yakunlandi!\n\nEndi siz botning barcha funksiyalaridan foydalanishingiz mumkin."
+    "registration_completed": "✅ Ro'yxatdan o'tish yakunlandi!\n\nEndi siz barcha bot funksiyalaridan foydalanishingiz mumkin."
   },
   "registration": {
     "role_driver": "🚛 Haydovchi",
-    "role_client": "📦 Buyurtmachi (Vositachi)",
-    "role_selected": "Ajoyib! Siz tanlagan rol: {{role}}",
+    "role_client": "📦 Mijoz",
+    "role_selected": "Ajoyib! Siz rolni tanladingiz: {{role}}",
     "enter_first_name": "👤 Ismingizni kiriting:",
     "enter_last_name": "👤 Familiyangizni kiriting:",
     "enter_birth_year": "📅 Tug'ilgan yilingizni kiriting (masalan: 1990):",
     "enter_vehicle_model": "🚗 Avtomobilingiz modelini kiriting:",
-    "choose_vehicle_category": "🚛 Transport kategoriyasini tanlang:",
+    "choose_vehicle_category": "🚛 Transport turini tanlang:",
     "enter_current_location": "📍 Hozirgi joylashuvingizni kiriting (shahar):",
-    "share_contact": "📱 Aloqa uchun kontaktingizni baham ko'ring:",
-    "contact_button": "📱 Kontakt baham ko'rish",
+    "share_contact": "📱 Aloqa uchun kontaktingizni ulashing:",
+    "share_contact_please": "📱 Iltimos, quyidagi tugmani bosib telefon raqamingizni ulashing.",
+    "contact_button": "📱 Kontakt ulashish",
     "invalid_year": "❌ Iltimos, to'g'ri yilni kiriting (masalan: 1990)",
+    "basic_info_completed": "✅ Asosiy ma'lumotlar saqlandi!",
+    "create_first_order": "📦 Endi birinchi buyurtmangizni yaratamiz:",
+    "create_first_offer": "🚛 Endi birinchi taklifingizni yaratamiz:",
     "vehicle_categories": {
       "light": "🚐 Yengil transport",
       "medium": "🚚 O'rta yuk mashinasi",
@@ -26,37 +31,49 @@
   },
   "menu": {
     "main_driver": "🚛 Asosiy menyu - Haydovchi",
-    "main_client": "📦 Asosiy menyu - Buyurtmachi",
-    "find_orders": "🔍 Buyurtmalar topish",
+    "main_client": "📦 Asosiy menyu - Mijoz",
+    "find_orders": "🔍 Buyurtma topish",
     "my_orders": "📋 Mening buyurtmalarim",
     "create_order": "➕ Buyurtma yaratish",
+    "create_offer": "🚛 Taklif yaratish",
+    "my_deals": "🚛 Mening bitimlarim",
+    "my_offers": "📋 Mening takliflarim",
     "my_profile": "👤 Mening profilim",
+    "profile": "👤 Profil",
+    "language": "🌐 Til",
     "settings": "⚙️ Sozlamalar"
   },
   "orders": {
     "create_title": "📦 Yangi buyurtma yaratish",
-    "enter_from": "📍 Yukni qayerdan olish kerak? (majburiy)\n\nShahar yoki manzilni kiriting:",
-    "enter_to": "📍 Yukni qayerga yetkazish kerak? (ixtiyoriy)\n\nShahar yoki manzilni kiriting yoki 'O'tkazib yuborish'ni bosing:",
-    "enter_date": "📅 Olib ketish sanasi va vaqti (ixtiyoriy)\n\nSanani KK.OO.YYYY formatida kiriting yoki 'O'tkazib yuborish'ni bosing:",
+    "enter_from": "📍 Yukni qayerdan olib ketish kerak? (majburiy)\n\nShahar yoki manzilni kiriting:",
+    "enter_to": "📍 Yukni qayerga yetkazib berish kerak? (ixtiyoriy)\n\nShahar yoki manzilni kiriting, yoki 'O'tkazib yuborish'ni bosing:",
+    "enter_date": "📅 Olib ketish sanasi va vaqti (ixtiyoriy)\n\nKK.OO.YYYY formatida sanani kiriting yoki 'O'tkazib yuborish'ni bosing:",
     "enter_price": "💰 Tashish narxi so'mda (ixtiyoriy)\n\nSummani kiriting yoki 'O'tkazib yuborish'ni bosing:",
-    "enter_description": "📝 Yuk tavsifi (ixtiyoriy)\n\nNima tashish kerakligini tasvirlab bering yoki 'O'tkazib yuborish'ni bosing:",
+    "enter_description": "📝 Yuk tavsifi (ixtiyoriy)\n\nNimani tashish kerakligini tasvirlab bering yoki 'O'tkazib yuborish'ni bosing:",
     "enter_weight": "⚖️ Yuk og'irligi (ixtiyoriy)\n\nTaxminiy og'irlikni kiriting yoki 'O'tkazib yuborish'ni bosing:",
     "enter_contact_name": "👤 Aloqa shaxsi (ixtiyoriy)\n\nAloqa shaxsining ismini kiriting yoki 'O'tkazib yuborish'ni bosing:",
-    "confirm_order": "✅ Buyurtma yaratishni tasdiqlang:\n\n{{orderSummary}}\n\nHamma narsa to'g'rimi?",
-    "order_created": "✅ Buyurtma yaratildi va e'lon qilindi!\n\nSizning #{{orderId}} buyurtmangiz tizimga joylashtirildi. Haydovchilar uni ko'rib, siz bilan bog'lanishlari mumkin.",
+    "confirm_order": "✅ Buyurtma yaratishni tasdiqlang:\n\n{{orderSummary}}\n\nHamması to'g'rimi?",
+    "order_created": "✅ Buyurtma yaratildi va e'lon qilindi!\n\nSizning #{{orderId}} buyurtmangiz tizimda joylashtirildi. Haydovchilar uni ko'rib, siz bilan bog'lanishlari mumkin.",
     "no_orders": "📭 Sizda hali buyurtmalar yo'q",
     "no_orders_found": "🔍 Sizning hududingizda mos buyurtmalar topilmadi",
     "order_details": "📦 Buyurtma #{{orderId}}\n\n📍 Qayerdan: {{from}}\n📍 Qayerga: {{to}}\n📅 Sana: {{date}}\n💰 Narx: {{price}}\n📝 Tavsif: {{description}}\n👤 Aloqa: {{contact}}\n\n📊 Holat: {{status}}",
-    "interested_button": "✋ Javob berish",
-    "already_interested": "✅ Siz bu buyurtmaga allaqachon javob bergansiz",
-    "interest_sent": "✅ Sizning javobingiz buyurtmachiga yuborildi!",
-    "cannot_take_more": "❌ Siz ko'proq buyurtma ololmaysiz. Joriy buyurtmalarni tugatib boring.",
+    "interested_button": "✋ Murojaat qilish",
+    "already_interested": "✅ Siz bu buyurtmaga allaqachon murojaat qilgansiz",
+    "interest_sent": "✅ Sizning murojaatingiz mijozga yuborildi!",
+    "cannot_take_more": "❌ Siz ko'proq buyurtma ololmaysiz. Joriy buyurtmalarni tugatig.",
     "skip": "⏭️ O'tkazib yuborish"
+  },
+  "drivers": {
+    "enter_available_location": "📍 Qayerda ishlashga tayyorsiz?",
+    "enter_destination": "📍 Qayerga borishga tayyorsiz? (ixtiyoriy)",
+    "offer_created": "✅ Taklif yaratildi va e'lon qilindi!",
+    "no_offers": "🚛 Sizda hali takliflar yo'q."
   },
   "profile": {
     "title": "👤 Sizning profilingiz",
     "info": "📋 Ma'lumot:\n👤 {{fullName}}\n📅 Tug'ilgan yil: {{birthYear}}\n🚛 Rol: {{role}}\n📱 Telefon: {{phone}}\n📍 Joylashuv: {{location}}\n\n📊 Statistika:\n⭐ Reyting: {{rating}}/5\n✅ Tugatilgan bitimlar: {{completedDeals}}\n📋 Faol buyurtmalar: {{activeOrders}}/{{maxOrders}}",
     "edit_location": "📍 Joylashuvni o'zgartirish",
+    "edit_vehicle": "🚗 Transportni o'zgartirish",
     "vehicle_info": "\n\n🚗 Transport haqida ma'lumot:\n🚛 Model: {{vehicleModel}}\n📦 Kategoriya: {{vehicleCategory}}"
   },
   "matching": {
@@ -67,7 +84,7 @@
   },
   "notifications": {
     "new_order_available": "🆕 Sizning hududingizda yangi buyurtma!\n\n{{orderSummary}}",
-    "driver_interested": "👋 Haydovchi sizning buyurtmangizga javob berdi!\n\n🚛 {{driverName}}\n⭐ Reyting: {{rating}}/5\n📱 Telefon: {{phone}}",
+    "driver_interested": "👋 Haydovchi sizning buyurtmangizga murojaat qildi!\n\n🚛 {{driverName}}\n⭐ Reyting: {{rating}}/5\n📱 Telefon: {{phone}}",
     "order_reminder": "⏰ #{{orderId}} buyurtma haqida eslatma\n\nBitim amalga oshdimi? Iltimos, buyurtma holatini yangilang."
   },
   "admin": {
@@ -75,10 +92,10 @@
     "panel_title": "🔧 Administrator paneli\n\nVariantni tanlang:",
     "groups_list": "📋 Guruhlar ro'yxati",
     "add_group": "➕ Guruh qo'shish",
-    "groups_settings": "⚙️ Guruhlar sozlamalari",
+    "groups_settings": "⚙️ Guruh sozlamalari",
     "reload_config": "🔄 Konfiguratsiyani qayta yuklash",
     "statistics": "📊 Statistika",
-    "error_menu": "❌ Administrator menyusini ko'rsatishda xatolik",
+    "error_menu": "❌ Administrator menyusini ko'rsatishda xato",
     "no_groups_configured": "📋 Guruhlar ro'yxati\n\n❌ Guruhlar sozlanmagan",
     "configured_groups": "📋 Sozlangan guruhlar:\n\n",
     "group_status_active": "✅",
@@ -86,41 +103,41 @@
     "group_region": "📍 Hudud: {{region}}",
     "group_id": "🆔 ID: {{id}}",
     "group_description": "📝 {{description}}",
-    "error_loading_groups": "❌ Guruhlar ro'yxatini yuklashda xatolik",
-    "settings_title": "⚙️ Guruhlar sozlamalari:\n\n",
-    "auto_posting": "🔄 Avtomatik posting: {{status}}",
+    "error_loading_groups": "❌ Guruhlar ro'yxatini yuklashda xato",
+    "settings_title": "⚙️ Guruh sozlamalari:\n\n",
+    "auto_posting": "🔄 Avto-posting: {{status}}",
     "max_groups_per_order": "📊 Buyurtma uchun maks. guruhlar: {{count}}",
     "posting_delay": "⏱️ Posting kechikishi: {{delay}}ms",
-    "retry_failed_posts": "🔁 Muvaffaqiyatsiz postlarni takrorlash: {{status}}",
-    "enable_auto_posting": "✅ Avtomatik postingni yoqish",
-    "disable_auto_posting": "❌ Avtomatik postingni o'chirish",
-    "error_loading_settings": "❌ Sozlamalarni yuklashda xatolik",
-    "auto_posting_enabled": "Avtomatik posting yoqildi",
-    "auto_posting_disabled": "Avtomatik posting o'chirildi",
-    "error_updating_setting": "❌ Sozlamani yangilashda xatolik",
+    "retry_failed_posts": "🔁 Muvaffaqiyatsiz postlarni qaytarish: {{status}}",
+    "enable_auto_posting": "✅ Avto-postingni yoqish",
+    "disable_auto_posting": "❌ Avto-postingni o'chirish",
+    "error_loading_settings": "❌ Sozlamalarni yuklashda xato",
+    "auto_posting_enabled": "Avto-posting yoqilgan",
+    "auto_posting_disabled": "Avto-posting o'chirilgan",
+    "error_updating_setting": "❌ Sozlamani yangilashda xato",
     "config_reloaded": "✅ Konfiguratsiya qayta yuklandi: {{groupsCount}} guruh, {{activeGroups}} faol",
-    "error_reloading_config": "❌ Konfiguratsiyani qayta yuklashda xatolik",
-    "add_group_instructions": "➕ Yangi guruh qo'shish\n\nGuruh qo'shish uchun:\n1. Bu botni guruhingizga administrator sifatida qo'shing\n2. Guruhda xabar yuboring\n3. Bu xabarni menga yo'naltiring\n\nYoki buyruq formatini ishlating:\n/addgroup GROUP_ID \"Guruh nomi\" \"hudud\"",
-    "error_add_group": "❌ Guruh qo'shish jarayonini boshlashda xatolik",
+    "error_reloading_config": "❌ Konfiguratsiyani qayta yuklashda xato",
+    "add_group_instructions": "➕ Yangi guruh qo'shish\n\nGuruh qo'shish uchun:\n1. Bu botni sizning guruhingizga administrator sifatida qo'shing\n2. Guruhda xabar yuboring\n3. Bu xabarni menga yo'naltiring\n\nYoki buyruq formatini ishlating:\n/addgroup GROUP_ID \"Guruh nomi\" \"hudud\"",
+    "error_add_group": "❌ Guruh qo'shish jarayonini boshlashda xato",
     "stats_title": "📊 Bot statistikasi:\n\n",
     "stats_users": "👥 Foydalanuvchilar:\n",
     "stats_total": "Jami: {{count}}",
     "stats_registered": "Ro'yxatdan o'tgan: {{count}}",
     "stats_drivers": "Haydovchilar: {{count}}",
-    "stats_clients": "Buyurtmachilar: {{count}}",
+    "stats_clients": "Mijozlar: {{count}}",
     "stats_orders": "📦 Buyurtmalar:\n",
     "stats_active": "Faol: {{count}}",
-    "stats_completed": "Yakunlangan: {{count}}",
+    "stats_completed": "Tugatilgan: {{count}}",
     "stats_groups": "📋 Guruhlar:\n",
     "stats_active_groups": "Faol: {{count}}",
-    "error_loading_stats": "❌ Statistikani yuklashda xatolik",
-    "error_processing_command": "❌ Administrator buyrug'ini qayta ishlashda xatolik",
+    "error_loading_stats": "❌ Statistikani yuklashda xato",
+    "error_processing_command": "❌ Administrator buyrug'ini qayta ishlashda xato",
     "addgroup_invalid_format": "❌ Noto'g'ri format. Ishlating: /addgroup GROUP_ID \"Guruh nomi\" \"hudud\"",
     "group_added_success": "✅ Guruh muvaffaqiyatli qo'shildi:\n📋 {{groupName}}\n📍 Hudud: {{region}}\n🆔 ID: {{groupId}}",
-    "error_adding_group": "❌ Guruh qo'shishda xatolik"
+    "error_adding_group": "❌ Guruh qo'shishda xato"
   },
   "help": {
-    "message": "🤖 LogisticBot bo'yicha yordam\n\n🚛 Haydovchilar uchun:\n• Sizning hududingizda buyurtmalar topish\n• Qiziqarli buyurtmalarga javob berish\n• Faol buyurtmalarni boshqarish\n\n📦 Buyurtmachilar uchun:\n• Tashish buyurtmasini yaratish\n• Haydovchilar javoblarini ko'rish\n• Mos haydovchilarni topish\n\n💡 Qo'shimcha buyruqlar:\n/profile - Sizning profilingiz\n/language - Tilni o'zgartirish\n/help - Ushbu yordam"
+    "message": "🤖 LogisticBot yordami\n\n🚛 Haydovchilar uchun:\n• Sizning hududingizda buyurtmalar topish\n• Qiziqarli buyurtmalarga murojaat qilish\n• Faol buyurtmalarni boshqarish\n\n📦 Mijozlar uchun:\n• Transport buyurtmasi yaratish\n• Haydovchi murojaatlarini ko'rish\n• Mos haydovchilar topish\n\n💡 Qo'shimcha buyruqlar:\n/profile - Sizning profilingiz\n/language - Tilni o'zgartirish\n/help - Bu yordam"
   },
   "settings": {
     "title": "⚙️ Sozlamalar\n\nIshlab chiqilmoqda..."
@@ -137,7 +154,8 @@
     "registration_required": "❌ Ushbu funksiyadan foydalanish uchun ro'yxatdan o'tishni yakunlash kerak.",
     "invalid_input": "❌ Noto'g'ri kiritish. Iltimos, qaytadan urinib ko'ring.",
     "order_not_found": "❌ Buyurtma topilmadi.",
-    "access_denied": "❌ Sizda bu buyurtmaga kirish huquqi yo'q."
+    "access_denied": "❌ Sizda bu buyurtmaga kirish huquqi yo'q.",
+    "unknown_command": "❌ Noma'lum buyruq. Quyidagi menyudan foydalaning:"
   },
   "buttons": {
     "back": "◀️ Orqaga",
@@ -158,5 +176,8 @@
     "in_progress": "🔵 Jarayonda",
     "completed": "✅ Yakunlandi",
     "cancelled": "❌ Bekor qilindi"
+  },
+  "keyboard": {
+    "removed": "⌨️ Klaviatura yashirildi"
   }
 }

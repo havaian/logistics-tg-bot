@@ -281,10 +281,10 @@ const updateOrderInGroups = async (order, newStatus, ctx) => {
  */
 const getStatusUpdateMessage = (order, status, ctx) => {
     const statusEmoji = {
-        'matched': '✅ ЗАКАЗ ПРИНЯТ',
+        'matched': 'ЗАКАЗ ПРИНЯТ',
         'in_progress': '🚛 В ПУТИ',
-        'completed': '✅ ВЫПОЛНЕН',
-        'cancelled': '❌ ОТМЕНЕН'
+        'completed': 'ВЫПОЛНЕН',
+        'cancelled': 'ОТМЕНЕН'
     };
 
     return statusEmoji[status] || '📋 ОБНОВЛЕН';

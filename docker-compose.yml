@@ -2,21 +2,46 @@ version: '3.8'
 
 services:
   # Tg bot
-  bot:
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    container_name: m-m-logistics-bot
+  # bot:
+  #   build:
+  #     context: ./
+  #     dockerfile: Dockerfile
+  #   container_name: m-m-logistics-bot
+  #   restart: always
+  #   environment:
+  #     - MONGO_URI=${MONGO_URL}
+  #     - REDIS_URL=redis://redis:6379
+  #   env_file:
+  #     - ./.env
+  #   volumes:
+  #     # Mount logs directory to host machine for persistent log storage
+  #     - ./logs:/app/logs
+  #   networks:
+  #     - network
+  #   depends_on:
+  #     - redis
+
+  # Redis for state management and caching
+  redis:
+    image: redis:7.2-alpine
+    container_name: m-m-logistics-redis
     restart: always
-    environment:
-      - MONGO_URI=${MONGO_URL}
-    env_file:
-      - ./.env
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
     volumes:
-      # Mount logs directory to host machine for persistent log storage
-      - ./logs:/app/logs
+      - redis_data:/data
+    ports:
+      - "6379:6379"  # Optional: for development access
     networks:
       - network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  redis_data:
+    driver: local
 
 networks:
   network:

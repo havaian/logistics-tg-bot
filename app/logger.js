@@ -9,8 +9,85 @@ if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir, { recursive: true });
 }
 
-// Define log format with timezone
+/**
+ * Extract caller information from stack trace
+ * @param {number} skipFrames - Number of frames to skip (default: 3)
+ * @returns {Object} - File name and line number
+ */
+const getCallerInfo = (skipFrames = 3) => {
+  const originalFunc = Error.prepareStackTrace;
+  let callerfile = 'unknown';
+  let callerline = 0;
+
+  try {
+    const err = new Error();
+
+    Error.prepareStackTrace = function (err, stack) {
+      return stack;
+    };
+
+    const stack = err.stack;
+
+    // Start from skipFrames to avoid our wrapper functions
+    for (let i = skipFrames; i < stack.length; i++) {
+      const caller = stack[i];
+      const filename = caller.getFileName();
+
+      if (!filename) continue;
+
+      const relativePath = path.relative(process.cwd(), filename);
+
+      // Skip files we don't want to show
+      const shouldSkip =
+        relativePath.includes('node_modules') ||           // Skip node_modules
+        relativePath.includes('logger.js') ||              // Skip logger files
+        filename.includes('winston') ||                    // Skip winston files
+        filename.includes('daily-rotate-file') ||          // Skip winston transport files
+        relativePath.startsWith('..') ||                   // Skip files outside project
+        filename === __filename ||                         // Skip this file
+        relativePath === '' ||                             // Skip empty paths
+        relativePath === '.';                              // Skip current dir
+
+      if (!shouldSkip && relativePath) {
+        callerfile = filename;
+        callerline = caller.getLineNumber();
+        break;
+      }
+    }
+  } catch (e) {
+    // Fallback if stack trace fails
+    callerfile = 'unknown';
+    callerline = 0;
+  }
+
+  Error.prepareStackTrace = originalFunc;
+
+  // Get relative path from project root
+  const relativePath = callerfile !== 'unknown'
+    ? path.relative(process.cwd(), callerfile)
+    : 'unknown';
+
+  return {
+    file: relativePath,
+    line: callerline || 0
+  };
+};
+
+/**
+ * Custom format that includes caller information
+ */
+const addCallerInfo = winston.format((info) => {
+  // If caller info wasn't already added by our wrapper functions, try to get it
+  if (!info.caller) {
+    const caller = getCallerInfo(5); // Skip more frames since we're deeper in winston
+    info.caller = `${caller.file}:${caller.line}`;
+  }
+  return info;
+});
+
+// Define log format with timezone and caller info
 const logFormat = winston.format.combine(
+  addCallerInfo(),
   winston.format.timestamp({
     format: () => {
       // Add +5 timezone (Tashkent/Uzbekistan)
@@ -21,12 +98,15 @@ const logFormat = winston.format.combine(
     }
   }),
   winston.format.errors({ stack: true }),
-  winston.format.printf(({ timestamp, level, message, stack, ...meta }) => {
-    let log = `${timestamp} [${level.toUpperCase()}]: ${message}`;
+  winston.format.printf(({ timestamp, level, message, caller, stack, ...meta }) => {
+    let log = `${timestamp} [${level.toUpperCase()}] ${caller}: ${message}`;
 
-    // Add metadata if present
-    if (Object.keys(meta).length > 0) {
-      log += ` | ${JSON.stringify(meta)}`;
+    // Add metadata if present (exclude caller from meta)
+    const cleanMeta = { ...meta };
+    delete cleanMeta.caller;
+
+    if (Object.keys(cleanMeta).length > 0) {
+      log += ` | ${JSON.stringify(cleanMeta)}`;
     }
 
     // Add stack trace for errors
@@ -38,9 +118,10 @@ const logFormat = winston.format.combine(
   })
 );
 
-// Console format for development with timezone
+// Console format for development with timezone and caller info
 const consoleFormat = winston.format.combine(
   winston.format.colorize(),
+  addCallerInfo(),
   winston.format.timestamp({
     format: () => {
       // Add +5 timezone for console output too
@@ -58,11 +139,17 @@ const consoleFormat = winston.format.combine(
       }).replace(/(\d+)\/(\d+)\/(\d+),/, '$3-$2-$1');
     }
   }),
-  winston.format.printf(({ timestamp, level, message, ...meta }) => {
-    let log = `${timestamp} ${level}: ${message}`;
+  winston.format.printf(({ timestamp, level, message, caller, ...meta }) => {
+    // Shorten file path for console display
+    const shortCaller = caller ? caller.replace(/^app\//, '') : 'unknown';
+    let log = `${timestamp} ${level} [${shortCaller}]: ${message}`;
 
-    if (Object.keys(meta).length > 0) {
-      log += ` ${JSON.stringify(meta, null, 2)}`;
+    // Clean meta (exclude caller)
+    const cleanMeta = { ...meta };
+    delete cleanMeta.caller;
+
+    if (Object.keys(cleanMeta).length > 0) {
+      log += ` ${JSON.stringify(cleanMeta, null, 2)}`;
     }
 
     return log;
@@ -116,7 +203,11 @@ const logger = winston.createLogger({
  */
 const logAction = (action, details = {}, level = 'info') => {
   try {
-    logger.log(level, action, details);
+    const caller = getCallerInfo(2); // Skip this function and the calling wrapper
+    logger.log(level, action, {
+      ...details,
+      caller: `${caller.file}:${caller.line}`
+    });
   } catch (error) {
     // Fallback to console if Winston fails
     console.error(`Error logging action ${action}:`, error);
@@ -128,31 +219,149 @@ const logAction = (action, details = {}, level = 'info') => {
  * Log user messages
  * @param {Object} user - Telegram user object
  * @param {String} message - Message text
+ * @param {Object} userState - Optional user state object
  */
-const logUserMessage = (user, message) => {
+const logUserMessage = (user, message, userState = null) => {
+  const caller = getCallerInfo(2);
   const username = user.username ? `@${user.username}` : `ID:${user.id}`;
   const firstName = user.first_name || '';
   const lastName = user.last_name || '';
   const fullName = `${firstName} ${lastName}`.trim();
 
-  logAction('user_message', {
+  const logData = {
     userId: user.id,
     username: user.username,
     fullName: fullName || null,
-    message: message.length > 500 ? message.substring(0, 500) + '...' : message
-  });
+    message: message.length > 500 ? message.substring(0, 500) + '...' : message,
+    caller: `${caller.file}:${caller.line}`
+  };
+
+  // Add user state if provided
+  if (userState) {
+    logData.userState = userState.current || userState;
+    if (userState.data && Object.keys(userState.data).length > 0) {
+      logData.stateData = userState.data;
+    }
+  }
+
+  logger.info('user_message', logData);
 };
 
 /**
- * Log bot errors
+ * Log user actions with state context
+ * @param {String} action - Action name
+ * @param {Object} ctx - Telegraf context (contains user and userState)
+ * @param {Object} details - Additional details
+ */
+const logUserAction = (action, ctx = {}, details = {}) => {
+  const caller = getCallerInfo(2);
+
+  const logData = {
+    userId: ctx.from?.id,
+    username: ctx.from?.username,
+    ...details,
+    ...ctx.userState,
+    ...ctx.user,
+    caller: `${caller.file}:${caller.line}`
+  };
+
+  logger.info(action, logData);
+};
+
+/**
+ * Extract error location from error stack trace
  * @param {Error} error - Error object
+ * @returns {Object} - File name and line number from error
+ */
+const getErrorLocation = (error) => {
+  if (!error || !error.stack) {
+    return { file: 'unknown', line: 0 };
+  }
+
+  try {
+    const stackLines = error.stack.split('\n');
+
+    // Look for the first line that contains a file path (not node_modules)
+    for (const line of stackLines) {
+      // Match patterns like:
+      // "    at Object.<anonymous> (C:\path\to\file.js:136:81)"
+      // "    at Function.Module._load (file.js:123:45)"
+      // Or just: "C:\path\to\file.js:136"
+
+      const match = line.match(/(?:at .+? \()?([^()]+\.js):(\d+)(?::\d+)?\)?/) ||
+        line.match(/([^\\\/\s]+\.js):(\d+)/);
+
+      if (match) {
+        const fullPath = match[1];
+        const lineNumber = parseInt(match[2]);
+
+        // Skip node_modules and get relative path
+        if (!fullPath.includes('node_modules')) {
+          let relativePath;
+
+          // If it's an absolute path, make it relative
+          if (path.isAbsolute(fullPath)) {
+            relativePath = path.relative(process.cwd(), fullPath);
+          } else {
+            relativePath = fullPath;
+          }
+
+          // Clean up the path
+          relativePath = relativePath.replace(/\\/g, '/'); // Convert backslashes to forward slashes
+
+          return {
+            file: relativePath,
+            line: lineNumber
+          };
+        }
+      }
+    }
+  } catch (e) {
+    // Parsing failed, return unknown
+  }
+
+  return { file: 'unknown', line: 0 };
+};
+
+/**
+ * Log bot errors with enhanced caller information
+ * @param {Error|String} error - Error object or error message
  * @param {Object} context - Additional context
  */
-const logError = (error, context = {}) => {
-  logger.error(error.message, {
-    stack: error.stack,
-    ...context
-  });
+const logError = (error, ctx = {}, meta = {}) => {
+  let caller;
+
+  if (error instanceof Error) {
+    // For actual Error objects, try to get location from the error's stack first
+    const errorLocation = getErrorLocation(error);
+
+    if (errorLocation.file !== 'unknown') {
+      // Use error's location if we found it
+      caller = `${errorLocation.file}:${errorLocation.line}`;
+    } else {
+      // Fallback to caller detection
+      const callerInfo = getCallerInfo(2);
+      caller = `${callerInfo.file}:${callerInfo.line}`;
+    }
+
+    logger.error(error.message, {
+      stack: error.stack,
+      errorName: error.name,
+      ...context,
+      caller: caller,
+      ...ctx.userState,
+      ...ctx.user,
+    });
+  } else {
+    // For string errors, use caller detection
+    const callerInfo = getCallerInfo(2);
+    logger.error(error.toString(), {
+      ...ctx.userState,
+      ...ctx.user,
+      ...meta,
+      caller: `${callerInfo.file}:${callerInfo.line}`
+    });
+  }
 };
 
 /**
@@ -160,8 +369,14 @@ const logError = (error, context = {}) => {
  * @param {String} message - Info message
  * @param {Object} meta - Additional metadata
  */
-const logInfo = (message, meta = {}) => {
-  logger.info(message, meta);
+const logInfo = (message, ctx = {}, meta = {}) => {
+  const caller = getCallerInfo(2);
+  logger.info(message, {
+    ...ctx.userState,
+    ...ctx.user,
+    ...meta,
+    caller: `${caller.file}:${caller.line}`
+  });
 };
 
 /**
@@ -169,8 +384,14 @@ const logInfo = (message, meta = {}) => {
  * @param {String} message - Warning message
  * @param {Object} meta - Additional metadata
  */
-const logWarn = (message, meta = {}) => {
-  logger.warn(message, meta);
+const logWarn = (message, ctx = {}, meta = {}) => {
+  const caller = getCallerInfo(2);
+  logger.warn(message, {
+    ...ctx.userState,
+    ...ctx.user,
+    ...meta,
+    caller: `${caller.file}:${caller.line}`
+  });
 };
 
 /**
@@ -178,14 +399,34 @@ const logWarn = (message, meta = {}) => {
  * @param {String} message - Debug message
  * @param {Object} meta - Additional metadata
  */
-const logDebug = (message, meta = {}) => {
-  logger.debug(message, meta);
+const logDebug = (message, ctx = {}, meta = {}) => {
+  const caller = getCallerInfo(2);
+  logger.debug(message, {
+    ...ctx.userState,
+    ...ctx.user,
+    ...meta,
+    caller: `${caller.file}:${caller.line}`
+  });
+};
+
+/**
+ * Log with custom caller information (for special cases)
+ * @param {String} level - Log level
+ * @param {String} message - Log message
+ * @param {String} customCaller - Custom caller info
+ * @param {Object} meta - Additional metadata
+ */
+const logWithCaller = (level, message, customCaller, meta = {}) => {
+  logger.log(level, message, {
+    ...meta,
+    caller: customCaller
+  });
 };
 
 // Create a stream for Morgan HTTP logging
 const stream = {
   write: (message) => {
-    logger.info(message.trim());
+    logger.info(message.trim(), { caller: 'http/morgan' });
   }
 };
 
@@ -193,11 +434,13 @@ const stream = {
 global.logger = {
   logger,
   logAction,
+  logUserAction,
   logUserMessage,
   logError,
   logInfo,
   logWarn,
   logDebug,
+  logWithCaller,
   stream
 };
 
@@ -205,10 +448,12 @@ global.logger = {
 module.exports = {
   logger,
   logAction,
+  logUserAction,
   logUserMessage,
   logError,
   logInfo,
   logWarn,
   logDebug,
+  logWithCaller,
   stream
 };

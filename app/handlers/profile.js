@@ -182,14 +182,14 @@ const viewMyOrder = async (ctx, orderId) => {
 
         if (order.status === 'matched' || order.status === 'in_progress') {
             keyboard.push([{
-                text: '✅ Завершить заказ',
+                text: 'Завершить заказ',
                 callback_data: `myorder:complete:${orderId}`
             }]);
         }
 
         if (order.status === 'active' && isClient) {
             keyboard.push([{
-                text: '❌ Отменить заказ',
+                text: 'Отменить заказ',
                 callback_data: `myorder:cancel:${orderId}`
             }]);
         }
@@ -238,7 +238,7 @@ const showInterestedDrivers = async (ctx, orderId) => {
 
             messageText += `${driverNum}. 🚛 ${driver.profile.fullName}\n`;
             messageText += `   ⭐ Рейтинг: ${driver.reputation.rating.toFixed(1)}/5\n`;
-            messageText += `   ✅ Сделок: ${driver.reputation.completedDeals}\n`;
+            messageText += `   Сделок: ${driver.reputation.completedDeals}\n`;
             if (driver.driverInfo.vehicleModel) {
                 messageText += `   🚗 ${driver.driverInfo.vehicleModel}\n`;
             }
@@ -248,7 +248,7 @@ const showInterestedDrivers = async (ctx, orderId) => {
             messageText += `\n`;
 
             keyboard.push([{
-                text: `✅ Выбрать водителя ${driverNum}`,
+                text: `Выбрать водителя ${driverNum}`,
                 callback_data: `myorder:select:${orderId}:${driver._id}`
             }]);
         });
@@ -298,16 +298,16 @@ const selectDriverForOrder = async (ctx, orderId, driverId) => {
         driver.activeOrders += 1;
         await driver.save();
 
-        await ctx.answerCbQuery('✅ Водитель назначен!');
+        await ctx.answerCbQuery('Водитель назначен!');
 
         // Send notification to driver
         try {
             await ctx.telegram.sendMessage(
                 driver.telegramId,
-                `✅ Вы назначены на заказ!\n\n${order.summary}\n\nСвяжитесь с заказчиком: ${user.profile.phoneNumber || 'См. профиль'}`
+                `Вы назначены на заказ!\n\n${order.summary}\n\nСвяжитесь с заказчиком: ${user.profile.phoneNumber || 'См. профиль'}`
             );
         } catch (error) {
-            global.logger.logWarn('Failed to notify driver:', error.message);
+            global.logger.logWarn('Failed to notify driver:', ctx, error.message);
         }
 
         // Update the message
@@ -371,14 +371,14 @@ const completeOrder = async (ctx, orderId) => {
             client.activeOrders = Math.max(0, client.activeOrders - 1);
             await client.save();
 
-            await ctx.answerCbQuery('✅ Заказ завершен!');
+            await ctx.answerCbQuery('Заказ завершен!');
 
             // TODO: Show review interface
 
         } else {
             await order.save();
             const waitingFor = isClient ? 'водителя' : 'заказчика';
-            await ctx.answerCbQuery(`✅ Отмечено! Ожидаем подтверждения от ${waitingFor}`);
+            await ctx.answerCbQuery(`Отмечено! Ожидаем подтверждения от ${waitingFor}`);
 
             // Notify the other party
             const otherPartyId = isClient ? order.driverId.telegramId : order.clientId.telegramId;
@@ -388,7 +388,7 @@ const completeOrder = async (ctx, orderId) => {
                     `⏰ Напоминание о заказе #${order._id.toString().slice(-6)}\n\nВторая сторона подтвердила завершение сделки. Пожалуйста, также подтвердите завершение в своих заказах.`
                 );
             } catch (error) {
-                global.logger.logWarn('Failed to notify other party:', error.message);
+                global.logger.logWarn('Failed to notify other party:', ctx, error.message);
             }
         }
 
@@ -438,7 +438,7 @@ const cancelOrder = async (ctx, orderId) => {
         user.activeOrders = Math.max(0, user.activeOrders - 1);
         await user.save();
 
-        await ctx.answerCbQuery('❌ Заказ отменен');
+        await ctx.answerCbQuery('Заказ отменен');
 
         // Update the message
         await viewMyOrder(ctx, orderId);
@@ -484,7 +484,7 @@ const handleLocationUpdate = async (ctx) => {
         const newLocation = ctx.message.text.trim();
 
         if (newLocation.length < 2) {
-            await ctx.reply('❌ Слишком короткое название. Попробуйте еще раз.');
+            await ctx.reply('Слишком короткое название. Попробуйте еще раз.');
             return true;
         }
 
@@ -495,7 +495,7 @@ const handleLocationUpdate = async (ctx) => {
         user.tempState = null;
         await user.save();
 
-        await ctx.reply('✅ Местоположение обновлено!');
+        await ctx.reply('Местоположение обновлено!');
 
         // Show updated profile
         setTimeout(async () => {

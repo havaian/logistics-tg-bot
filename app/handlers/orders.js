@@ -610,7 +610,7 @@ const postOrderToGroup = async (order, ctx) => {
         await postToGroups(order, ctx);
     } catch (error) {
         // Silent fail - groups not yet implemented
-        global.logger.logWarn('Group posting not yet implemented');
+        global.logger.logWarn('Group posting not yet implemented', ctx);
     }
 };
 

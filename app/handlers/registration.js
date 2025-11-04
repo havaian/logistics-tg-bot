@@ -227,7 +227,7 @@ const handleVehicleCategory = async (ctx) => {
 
         await ctx.answerCbQuery();
         await ctx.editMessageText(
-            t(ctx, 'registration.choose_vehicle_category') + '\n\n✅ ' +
+            t(ctx, 'registration.choose_vehicle_category') + '\n\n' +
             t(ctx, `registration.vehicle_categories.${category}`)
         );
 

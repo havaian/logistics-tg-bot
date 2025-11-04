@@ -38,7 +38,7 @@ const findSuitableDrivers = async (order, limit = 10) => {
         return driverScores.slice(0, limit);
 
     } catch (error) {
-        global.logger.global.logger.logError('Error in findSuitableDrivers:', error);
+        global.logger.global.logger.logError('Error in findSuitableDrivers:', {}, error);
         return [];
     }
 };
@@ -171,7 +171,7 @@ const getMatchingDriversForOrder = async (order, ctx) => {
         };
 
     } catch (error) {
-        global.logger.global.logger.logError('Error getting matching drivers:', error);
+        global.logger.global.logger.logError('Error getting matching drivers:', ctx, error);
         return {
             found: false,
             message: t(ctx, 'errors.general'),
@@ -237,7 +237,7 @@ const notifyRelevantDrivers = async (order, ctx) => {
                 await new Promise(resolve => setTimeout(resolve, 100));
 
             } catch (error) {
-                global.logger.global.logger.logWarn(`Failed to notify driver ${match.driver._id}:`, error.message);
+                global.logger.global.logger.logWarn(`Failed to notify driver ${match.driver._id}:`, ctx, error.message);
             }
         }
 
@@ -252,7 +252,7 @@ const notifyRelevantDrivers = async (order, ctx) => {
             orderId: order._id,
             error: error.message
         });
-        global.logger.global.logger.logError('Error notifying drivers:', error);
+        global.logger.global.logger.logError('Error notifying drivers:', ctx, error);
     }
 };
 
@@ -291,7 +291,7 @@ const findOrdersForDriver = async (driver, limit = 10) => {
         return orderScores.slice(0, limit);
 
     } catch (error) {
-        global.logger.global.logger.logError('Error finding orders for driver:', error);
+        global.logger.global.logger.logError('Error finding orders for driver:', {}, error);
         return [];
     }
 };

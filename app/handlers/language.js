@@ -23,7 +23,7 @@ const handleLanguageSelection = async (ctx) => {
             { reply_markup: { inline_keyboard: keyboard } }
         );
     } catch (error) {
-        global.logger.logError('Error handling language selection:', error);
+        global.logger.logError('Error handling language selection:', ctx, error);
         await ctx.reply(t(ctx, 'errors.general'));
     }
 };
@@ -65,7 +65,7 @@ const handleLanguageChange = async (ctx) => {
             newLanguage: locale
         });
     } catch (error) {
-        global.logger.logError('Error handling language change:', error);
+        global.logger.logError('Error handling language change:', ctx, error);
         await ctx.answerCbQuery(t(ctx, 'errors.general'));
     }
 };
