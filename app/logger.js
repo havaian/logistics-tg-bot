@@ -189,6 +189,19 @@ const stream = {
   }
 };
 
+// Make logger functions available globally
+global.logger = {
+  logger,
+  logAction,
+  logUserMessage,
+  logError,
+  logInfo,
+  logWarn,
+  logDebug,
+  stream
+};
+
+// Keep module exports for backward compatibility
 module.exports = {
   logger,
   logAction,

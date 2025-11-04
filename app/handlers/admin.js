@@ -1,5 +1,4 @@
 const { t } = require('../utils/i18nHelper');
-const { logAction } = require('../logger');
 const groupsHandler = require('./groups');
 
 // List of admin user IDs (add your admin Telegram IDs here)
@@ -49,7 +48,7 @@ const showAdminMenu = async (ctx) => {
             { reply_markup: { inline_keyboard: keyboard } }
         );
 
-        logAction('admin_menu_accessed', {
+        global.logger.logAction('admin_menu_accessed', {
             adminId: ctx.from.id,
             username: ctx.from.username
         });
@@ -164,7 +163,7 @@ const toggleAutoPosting = async (ctx) => {
         await ctx.answerCbQuery(statusMessage);
         await showGroupsSettings(ctx);
 
-        logAction('admin_toggled_auto_posting', {
+        global.logger.logAction('admin_toggled_auto_posting', {
             adminId: ctx.from.id,
             newValue: newValue
         });
@@ -189,7 +188,7 @@ const reloadGroupsConfig = async (ctx) => {
         await ctx.answerCbQuery(message);
         await showGroupsList(ctx);
 
-        logAction('admin_reloaded_groups_config', {
+        global.logger.logAction('admin_reloaded_groups_config', {
             adminId: ctx.from.id,
             groupsCount: result.groupsCount,
             activeGroups: result.activeGroups
@@ -261,7 +260,7 @@ const showStatistics = async (ctx) => {
             { reply_markup: { inline_keyboard: [[{ text: t(ctx, 'buttons.back'), callback_data: 'admin:menu' }]] } }
         );
 
-        logAction('admin_viewed_statistics', {
+        global.logger.logAction('admin_viewed_statistics', {
             adminId: ctx.from.id
         });
 
@@ -301,7 +300,7 @@ const handleAdminCommand = async (ctx) => {
                 });
                 await ctx.reply(successMessage);
 
-                logAction('admin_added_group', {
+                global.logger.logAction('admin_added_group', {
                     adminId: ctx.from.id,
                     groupId: parseInt(groupId),
                     groupName: groupName,

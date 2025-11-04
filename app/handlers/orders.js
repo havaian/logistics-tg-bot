@@ -1,7 +1,6 @@
 const Order = require('../models/order');
 const User = require('../models/user');
 const { t } = require('../utils/i18nHelper');
-const { logAction, logWarn } = require('../logger');
 const {
     getBackButton,
     getConfirmationKeyboard,
@@ -38,7 +37,7 @@ const startOrderCreation = async (ctx) => {
             getBackButton(ctx, 'menu:main')
         );
 
-        logAction('order_creation_started', {
+        global.logger.logAction('order_creation_started', {
             userId: user._id,
             userRole: user.profile.role
         });
@@ -372,7 +371,7 @@ const confirmOrder = async (ctx) => {
             );
         }, 2000);
 
-        logAction('order_created', {
+        global.logger.logAction('order_created', {
             userId: user._id,
             orderId: order._id,
             from: order.cargo.from,
@@ -589,7 +588,7 @@ const showInterestInOrder = async (ctx, orderId) => {
         // Send notification to client (you'll need to implement this)
         // await ctx.telegram.sendMessage(clientId, notification);
 
-        logAction('driver_showed_interest', {
+        global.logger.logAction('driver_showed_interest', {
             driverId: user._id,
             orderId: order._id,
             clientId: order.clientId._id
@@ -611,7 +610,7 @@ const postOrderToGroup = async (order, ctx) => {
         await postToGroups(order, ctx);
     } catch (error) {
         // Silent fail - groups not yet implemented
-        logWarn('Group posting not yet implemented');
+        global.logger.logWarn('Group posting not yet implemented');
     }
 };
 

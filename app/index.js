@@ -3,7 +3,7 @@ const { Telegraf, session } = require('telegraf');
 const mongoose = require('mongoose');
 
 // Import logger
-const { logAction, logUserMessage, logError, logInfo } = require('./logger');
+require('./logger');
 
 // Import the translation helper
 const { t } = require('./utils/i18nHelper');
@@ -22,7 +22,7 @@ const requiredEnvVars = ['BOT_TOKEN', 'MONGO_URI'];
 const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
 
 if (missingEnvVars.length > 0) {
-    logError(new Error(`Missing required environment variables: ${missingEnvVars.join(', ')}`));
+    global.logger.logError(new Error(`Missing required environment variables: ${missingEnvVars.join(', ')}`));
     process.exit(1);
 }
 
@@ -32,10 +32,10 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
-        logInfo('✅ MongoDB', { database: process.env.MONGO_URI.split('/').pop() });
+        global.logger.logInfo('✅ MongoDB', { database: process.env.MONGO_URI.split('/').pop() });
     })
     .catch(err => {
-        logError(err, { context: 'MongoDB connection failed' });
+        global.logger.logError(err, { context: 'MongoDB connection failed' });
         process.exit(1);
     });
 
@@ -50,12 +50,12 @@ bot.use(detectUserLanguage);
 bot.use(async (ctx, next) => {
     try {
         if (ctx.message && ctx.message.text) {
-            logUserMessage(ctx.from, ctx.message.text);
+            global.logger.logUserMessage(ctx.from, ctx.message.text);
         }
 
         // Log callback queries
         if (ctx.callbackQuery) {
-            logAction('callback_query', {
+            global.logger.logAction('callback_query', {
                 userId: ctx.from.id,
                 username: ctx.from.username,
                 data: ctx.callbackQuery.data
@@ -64,7 +64,7 @@ bot.use(async (ctx, next) => {
 
         return next();
     } catch (error) {
-        logError(error, { context: 'Logging middleware error' });
+        global.logger.logError(error, { context: 'Logging middleware error' });
         return next();
     }
 });
@@ -76,7 +76,7 @@ const userMiddleware = async (ctx, next) => {
         ctx.user = user;
         return next();
     } catch (error) {
-        logError(error, { context: 'User middleware error' });
+        global.logger.logError(error, { context: 'User middleware error' });
         await ctx.reply(t(ctx, 'errors.general'));
     }
 };
@@ -104,7 +104,7 @@ const handleStart = async (ctx) => {
                 getMainMenuKeyboard(ctx, user)
             );
 
-            logAction('user_started_bot', {
+            global.logger.logAction('user_started_bot', {
                 userId: ctx.from.id,
                 username: ctx.from.username,
                 firstName: ctx.from.first_name,
@@ -113,7 +113,7 @@ const handleStart = async (ctx) => {
             });
         });
     } catch (error) {
-        logError(error, { context: 'Start handler error', userId: ctx.from.id });
+        global.logger.logError(error, { context: 'Start handler error', userId: ctx.from.id });
         await ctx.reply(t(ctx, 'errors.general'));
     }
 };
@@ -123,12 +123,12 @@ const handleHelp = async (ctx) => {
         const helpMessage = t(ctx, 'help.message');
         await ctx.reply(helpMessage);
 
-        logAction('user_requested_help', {
+        global.logger.logAction('user_requested_help', {
             userId: ctx.from.id,
             username: ctx.from.username
         });
     } catch (error) {
-        logError(error, { context: 'Help handler error', userId: ctx.from.id });
+        global.logger.logError(error, { context: 'Help handler error', userId: ctx.from.id });
         await ctx.reply(t(ctx, 'errors.general'));
     }
 };
@@ -279,7 +279,7 @@ bot.on('contact', userMiddleware, async (ctx) => {
             return await registrationHandlers.handleContactStep(ctx, user);
         }
     } catch (error) {
-        logError(error, { context: 'Contact handler error' });
+        global.logger.logError(error, { context: 'Contact handler error' });
     }
 });
 
@@ -335,7 +335,7 @@ bot.on('message', userMiddleware, async (ctx, next) => {
         }
 
     } catch (error) {
-        logError(error, { context: 'Message handler error', userId: ctx.from.id });
+        global.logger.logError(error, { context: 'Message handler error', userId: ctx.from.id });
         return next();
     }
 });
@@ -350,7 +350,7 @@ bot.catch((err, ctx) => {
         messageId: ctx.message ? ctx.message.message_id : null
     };
 
-    logError(err, errorContext);
+    global.logger.logError(err, errorContext);
 
     // Try to respond to user when error occurs
     try {
@@ -361,7 +361,7 @@ bot.catch((err, ctx) => {
             ctx.reply(t(ctx, 'errors.general'));
         }
     } catch (replyErr) {
-        logError(replyErr, { context: 'Error sending error message to user' });
+        global.logger.logError(replyErr, { context: 'Error sending error message to user' });
         // Fallback to hardcoded message if translation fails
         try {
             if (ctx.answerCbQuery) {
@@ -370,22 +370,22 @@ bot.catch((err, ctx) => {
                 ctx.reply('An error occurred while processing your request. Please try again later.');
             }
         } catch (finalErr) {
-            logError(finalErr, { context: 'Final error fallback failed' });
+            global.logger.logError(finalErr, { context: 'Final error fallback failed' });
         }
     }
 });
 
 // Graceful shutdown handlers
 const gracefulShutdown = (signal) => {
-    logInfo(`Bot shutting down due to ${signal}...`);
+    global.logger.logInfo(`Bot shutting down due to ${signal}...`);
 
     bot.stop(signal)
         .then(() => {
-            logInfo(`Bot stopped successfully (${signal})`);
+            global.logger.logInfo(`Bot stopped successfully (${signal})`);
             process.exit(0);
         })
         .catch((err) => {
-            logError(err, { context: `Error stopping bot on ${signal}` });
+            global.logger.logError(err, { context: `Error stopping bot on ${signal}` });
             process.exit(1);
         });
 };
@@ -393,14 +393,14 @@ const gracefulShutdown = (signal) => {
 // Launch bot
 bot.launch()
     .then(() => {
-        logInfo('Bot started successfully', {
+        global.logger.logInfo('Bot started successfully', {
             nodeEnv: process.env.NODE_ENV || 'production',
             pid: process.pid,
             botUsername: process.env.BOT_USERNAME || 'unknown'
         });
     })
     .catch(err => {
-        logError(err, { context: 'Bot startup failed' });
+        global.logger.logError(err, { context: 'Bot startup failed' });
         process.exit(1);
     });
 

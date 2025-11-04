@@ -1,6 +1,5 @@
 const User = require('../models/user');
 const { t } = require('../utils/i18nHelper');
-const { logAction } = require('../logger');
 
 /**
  * Get or create user and check registration status
@@ -21,7 +20,7 @@ const getOrCreateUser = async (ctx) => {
             });
             await user.save();
 
-            logAction('user_created', {
+            global.logger.logAction('user_created', {
                 userId: user._id,
                 telegramId: ctx.from.id,
                 username: ctx.from.username
@@ -87,7 +86,7 @@ const handleRoleSelection = async (ctx) => {
             await ctx.reply(t(ctx, 'registration.enter_first_name'));
         }, 500);
 
-        logAction('user_selected_role', {
+        global.logger.logAction('user_selected_role', {
             userId: user._id,
             role: role
         });
@@ -290,7 +289,7 @@ const handleContactStep = async (ctx, user) => {
                 );
             }, 1000);
 
-            logAction('user_completed_registration', {
+            global.logger.logAction('user_completed_registration', {
                 userId: user._id,
                 role: user.profile.role,
                 hasPhone: !!user.profile.phoneNumber

@@ -1,6 +1,5 @@
 const { getOrCreateUser, isGroupChat } = require('./common');
 const { t } = require('../utils/i18nHelper');
-const { logAction, logError } = require('../logger');
 
 /**
  * Handle /language command - show language selection
@@ -24,7 +23,7 @@ const handleLanguageSelection = async (ctx) => {
             { reply_markup: { inline_keyboard: keyboard } }
         );
     } catch (error) {
-        logError('Error handling language selection:', error);
+        global.logger.logError('Error handling language selection:', error);
         await ctx.reply(t(ctx, 'errors.general'));
     }
 };
@@ -61,12 +60,12 @@ const handleLanguageChange = async (ctx) => {
             }
         }
 
-        logAction('user_changed_language', {
+        global.logger.logAction('user_changed_language', {
             userId: user._id,
             newLanguage: locale
         });
     } catch (error) {
-        logError('Error handling language change:', error);
+        global.logger.logError('Error handling language change:', error);
         await ctx.answerCbQuery(t(ctx, 'errors.general'));
     }
 };

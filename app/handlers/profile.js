@@ -1,7 +1,6 @@
 const User = require('../models/user');
 const Order = require('../models/order');
 const { t } = require('../utils/i18nHelper');
-const { logAction, logWarn } = require('../logger');
 const {
     getBackButton,
     formatUserInfo,
@@ -35,7 +34,7 @@ const showProfile = async (ctx) => {
             { reply_markup: { inline_keyboard: keyboard } }
         );
 
-        logAction('profile_viewed', {
+        global.logger.logAction('profile_viewed', {
             userId: user._id,
             role: user.profile.role
         });
@@ -308,13 +307,13 @@ const selectDriverForOrder = async (ctx, orderId, driverId) => {
                 `✅ Вы назначены на заказ!\n\n${order.summary}\n\nСвяжитесь с заказчиком: ${user.profile.phoneNumber || 'См. профиль'}`
             );
         } catch (error) {
-            logWarn('Failed to notify driver:', error.message);
+            global.logger.logWarn('Failed to notify driver:', error.message);
         }
 
         // Update the message
         await viewMyOrder(ctx, orderId);
 
-        logAction('driver_selected', {
+        global.logger.logAction('driver_selected', {
             orderId: order._id,
             driverId: driver._id,
             clientId: user._id
@@ -389,14 +388,14 @@ const completeOrder = async (ctx, orderId) => {
                     `⏰ Напоминание о заказе #${order._id.toString().slice(-6)}\n\nВторая сторона подтвердила завершение сделки. Пожалуйста, также подтвердите завершение в своих заказах.`
                 );
             } catch (error) {
-                logWarn('Failed to notify other party:', error.message);
+                global.logger.logWarn('Failed to notify other party:', error.message);
             }
         }
 
         // Update the message
         await viewMyOrder(ctx, orderId);
 
-        logAction('order_completion_marked', {
+        global.logger.logAction('order_completion_marked', {
             orderId: order._id,
             userId: user._id,
             role: isClient ? 'client' : 'driver',
@@ -444,7 +443,7 @@ const cancelOrder = async (ctx, orderId) => {
         // Update the message
         await viewMyOrder(ctx, orderId);
 
-        logAction('order_cancelled', {
+        global.logger.logAction('order_cancelled', {
             orderId: order._id,
             clientId: user._id
         });
@@ -503,7 +502,7 @@ const handleLocationUpdate = async (ctx) => {
             await showProfile(ctx);
         }, 1000);
 
-        logAction('location_updated', {
+        global.logger.logAction('location_updated', {
             userId: user._id,
             newLocation: newLocation
         });

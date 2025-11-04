@@ -1,5 +1,4 @@
 const { t } = require('../utils/i18nHelper');
-const { logAction } = require('../logger');
 
 /**
  * Configuration for Telegram groups where orders should be posted
@@ -112,7 +111,7 @@ const createGroupKeyboard = (orderId) => {
 const postToGroups = async (order, ctx) => {
     try {
         if (LOGISTICS_GROUPS.length === 0) {
-            logAction('group_posting_skipped', {
+            global.logger.logAction('group_posting_skipped', {
                 orderId: order._id,
                 reason: 'no_groups_configured'
             });
@@ -154,7 +153,7 @@ const postToGroups = async (order, ctx) => {
                     messageId: sentMessage.message_id
                 });
 
-                logAction('order_posted_to_group', {
+                global.logger.logAction('order_posted_to_group', {
                     orderId: order._id,
                     groupId: group.id,
                     groupName: group.name,
@@ -169,7 +168,7 @@ const postToGroups = async (order, ctx) => {
                     error: error.message
                 });
 
-                logAction('group_posting_failed', {
+                global.logger.logAction('group_posting_failed', {
                     orderId: order._id,
                     groupId: group.id,
                     groupName: group.name,
@@ -181,7 +180,7 @@ const postToGroups = async (order, ctx) => {
         return postingResults;
 
     } catch (error) {
-        logAction('group_posting_error', {
+        global.logger.logAction('group_posting_error', {
             orderId: order._id,
             error: error.message
         });
@@ -206,7 +205,7 @@ const handleGroupInterest = async (ctx) => {
             { url: deepLink }
         );
 
-        logAction('group_interest_redirected', {
+        global.logger.logAction('group_interest_redirected', {
             orderId,
             userId: user.id,
             username: user.username,
@@ -238,7 +237,7 @@ const handleGroupContact = async (ctx) => {
 
         await ctx.answerCbQuery(contactInfo, { show_alert: true });
 
-        logAction('group_contact_shown', {
+        global.logger.logAction('group_contact_shown', {
             orderId,
             userId: ctx.from.id,
             groupId: ctx.chat.id
@@ -263,14 +262,14 @@ const updateOrderInGroups = async (order, newStatus, ctx) => {
 
         // In a real implementation, you would update the original messages
         // For now, we'll just log the update
-        logAction('order_status_updated_in_groups', {
+        global.logger.logAction('order_status_updated_in_groups', {
             orderId: order._id,
             newStatus,
             groupMessageId: order.groupMessageId
         });
 
     } catch (error) {
-        logAction('group_update_failed', {
+        global.logger.logAction('group_update_failed', {
             orderId: order._id,
             error: error.message
         });
@@ -310,7 +309,7 @@ const addGroup = (groupId, groupName, region = '') => {
         });
     }
 
-    logAction('group_added', {
+    global.logger.logAction('group_added', {
         groupId,
         groupName,
         region
@@ -326,7 +325,7 @@ const removeGroup = (groupId) => {
     if (groupIndex !== -1) {
         LOGISTICS_GROUPS[groupIndex].active = false;
 
-        logAction('group_removed', {
+        global.logger.logAction('group_removed', {
             groupId,
             groupName: LOGISTICS_GROUPS[groupIndex].name
         });

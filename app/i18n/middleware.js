@@ -1,6 +1,4 @@
 const User = require('../models/user');
-// Import logger
-const { logError } = require('../logger');
 
 const detectUserLanguage = async (ctx, next) => {
     try {
@@ -43,7 +41,7 @@ const detectUserLanguage = async (ctx, next) => {
 
         return next();
     } catch (error) {
-        logError('Error in language detection middleware:', error);
+        global.logger.logError('Error in language detection middleware:', error);
         ctx.locale = 'ru'; // Fallback to Russian
         return next();
     }

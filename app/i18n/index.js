@@ -1,9 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-// Import logger
-const { logError, logWarn, logInfo } = require('../logger');
-
 class I18n {
     constructor() {
         this.locales = {};
@@ -17,7 +14,7 @@ class I18n {
 
         // Check if locales directory exists
         if (!fs.existsSync(localesDir)) {
-            logWarn('⚠️ Locales directory not found, creating it...');
+            global.logger.logWarn('⚠️ Locales directory not found, creating it...');
             fs.mkdirSync(localesDir, { recursive: true });
             return;
         }
@@ -30,9 +27,9 @@ class I18n {
                 const filePath = path.join(localesDir, file);
                 try {
                     this.locales[locale] = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-                    logInfo(`✅ Locale: ${locale}`);
+                    global.logger.logInfo(`✅ Locale: ${locale}`);
                 } catch (error) {
-                    logError(`❌ Error loading locale ${locale}:`, error.message);
+                    global.logger.logError(`❌ Error loading locale ${locale}:`, error.message);
                 }
             }
         });
@@ -43,7 +40,7 @@ class I18n {
         const value = this.getNestedValue(messages, key);
 
         if (!value) {
-            logWarn(`⚠️ Translation missing: ${key} for locale: ${locale}`);
+            global.logger.logWarn(`⚠️ Translation missing: ${key} for locale: ${locale}`);
             return key; // Return key as fallback
         }
 
