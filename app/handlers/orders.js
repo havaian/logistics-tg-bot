@@ -1,6 +1,5 @@
 const Order = require('../models/order');
 const User = require('../models/user');
-const { t } = require('../utils/i18nHelper');
 const {
     getBackButton,
     getConfirmationKeyboard,
@@ -19,7 +18,7 @@ const startOrderCreation = async (ctx) => {
         const user = ctx.user;
 
         if (!user.isClient()) {
-            await ctx.reply(t(ctx, 'errors.access_denied'));
+            await ctx.reply(global.i18n.t(ctx, 'errors.access_denied'));
             return;
         }
 
@@ -33,7 +32,7 @@ const startOrderCreation = async (ctx) => {
         });
 
         await ctx.reply(
-            t(ctx, 'orders.create_title') + '\n\n' + t(ctx, 'orders.enter_from'),
+            global.i18n.t(ctx, 'orders.create_title') + '\n\n' + global.i18n.t(ctx, 'orders.enter_from'),
             getBackButton(ctx, 'menu:main')
         );
 
@@ -42,7 +41,7 @@ const startOrderCreation = async (ctx) => {
             userRole: user.profile.role
         });
     } catch (error) {
-        await ctx.reply(t(ctx, 'errors.general'));
+        await ctx.reply(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };
@@ -62,7 +61,7 @@ const handleOrderCreationStep = async (ctx) => {
         const messageText = ctx.message.text?.trim();
 
         // Handle skip button
-        if (messageText === t(ctx, 'orders.skip')) {
+        if (messageText === global.i18n.t(ctx, 'orders.skip')) {
             return await handleSkipStep(ctx, session);
         }
 
@@ -85,7 +84,7 @@ const handleOrderCreationStep = async (ctx) => {
                 return false;
         }
     } catch (error) {
-        await ctx.reply(t(ctx, 'errors.general'));
+        await ctx.reply(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };
@@ -95,7 +94,7 @@ const handleOrderCreationStep = async (ctx) => {
  */
 const handleFromStep = async (ctx, session, messageText) => {
     if (!messageText || messageText.length < 2) {
-        await ctx.reply(t(ctx, 'errors.invalid_input'));
+        await ctx.reply(global.i18n.t(ctx, 'errors.invalid_input'));
         return true;
     }
 
@@ -106,13 +105,13 @@ const handleFromStep = async (ctx, session, messageText) => {
     const keyboard = {
         reply_markup: {
             inline_keyboard: [
-                [{ text: t(ctx, 'orders.skip'), callback_data: 'order:skip' }],
-                [{ text: t(ctx, 'buttons.cancel'), callback_data: 'order:cancel' }]
+                [{ text: global.i18n.t(ctx, 'orders.skip'), callback_data: 'order:skip' }],
+                [{ text: global.i18n.t(ctx, 'buttons.cancel'), callback_data: 'order:cancel' }]
             ]
         }
     };
 
-    await ctx.reply(t(ctx, 'orders.enter_to'), keyboard);
+    await ctx.reply(global.i18n.t(ctx, 'orders.enter_to'), keyboard);
     return true;
 };
 
@@ -130,13 +129,13 @@ const handleToStep = async (ctx, session, messageText) => {
     const keyboard = {
         reply_markup: {
             inline_keyboard: [
-                [{ text: t(ctx, 'orders.skip'), callback_data: 'order:skip' }],
-                [{ text: t(ctx, 'buttons.cancel'), callback_data: 'order:cancel' }]
+                [{ text: global.i18n.t(ctx, 'orders.skip'), callback_data: 'order:skip' }],
+                [{ text: global.i18n.t(ctx, 'buttons.cancel'), callback_data: 'order:cancel' }]
             ]
         }
     };
 
-    await ctx.reply(t(ctx, 'orders.enter_date'), keyboard);
+    await ctx.reply(global.i18n.t(ctx, 'orders.enter_date'), keyboard);
     return true;
 };
 
@@ -165,13 +164,13 @@ const handleDateStep = async (ctx, session, messageText) => {
     const keyboard = {
         reply_markup: {
             inline_keyboard: [
-                [{ text: t(ctx, 'orders.skip'), callback_data: 'order:skip' }],
-                [{ text: t(ctx, 'buttons.cancel'), callback_data: 'order:cancel' }]
+                [{ text: global.i18n.t(ctx, 'orders.skip'), callback_data: 'order:skip' }],
+                [{ text: global.i18n.t(ctx, 'buttons.cancel'), callback_data: 'order:cancel' }]
             ]
         }
     };
 
-    await ctx.reply(t(ctx, 'orders.enter_price'), keyboard);
+    await ctx.reply(global.i18n.t(ctx, 'orders.enter_price'), keyboard);
     return true;
 };
 
@@ -192,13 +191,13 @@ const handlePriceStep = async (ctx, session, messageText) => {
     const keyboard = {
         reply_markup: {
             inline_keyboard: [
-                [{ text: t(ctx, 'orders.skip'), callback_data: 'order:skip' }],
-                [{ text: t(ctx, 'buttons.cancel'), callback_data: 'order:cancel' }]
+                [{ text: global.i18n.t(ctx, 'orders.skip'), callback_data: 'order:skip' }],
+                [{ text: global.i18n.t(ctx, 'buttons.cancel'), callback_data: 'order:cancel' }]
             ]
         }
     };
 
-    await ctx.reply(t(ctx, 'orders.enter_description'), keyboard);
+    await ctx.reply(global.i18n.t(ctx, 'orders.enter_description'), keyboard);
     return true;
 };
 
@@ -216,13 +215,13 @@ const handleDescriptionStep = async (ctx, session, messageText) => {
     const keyboard = {
         reply_markup: {
             inline_keyboard: [
-                [{ text: t(ctx, 'orders.skip'), callback_data: 'order:skip' }],
-                [{ text: t(ctx, 'buttons.cancel'), callback_data: 'order:cancel' }]
+                [{ text: global.i18n.t(ctx, 'orders.skip'), callback_data: 'order:skip' }],
+                [{ text: global.i18n.t(ctx, 'buttons.cancel'), callback_data: 'order:cancel' }]
             ]
         }
     };
 
-    await ctx.reply(t(ctx, 'orders.enter_weight'), keyboard);
+    await ctx.reply(global.i18n.t(ctx, 'orders.enter_weight'), keyboard);
     return true;
 };
 
@@ -240,13 +239,13 @@ const handleWeightStep = async (ctx, session, messageText) => {
     const keyboard = {
         reply_markup: {
             inline_keyboard: [
-                [{ text: t(ctx, 'orders.skip'), callback_data: 'order:skip' }],
-                [{ text: t(ctx, 'buttons.cancel'), callback_data: 'order:cancel' }]
+                [{ text: global.i18n.t(ctx, 'orders.skip'), callback_data: 'order:skip' }],
+                [{ text: global.i18n.t(ctx, 'buttons.cancel'), callback_data: 'order:cancel' }]
             ]
         }
     };
 
-    await ctx.reply(t(ctx, 'orders.enter_contact_name'), keyboard);
+    await ctx.reply(global.i18n.t(ctx, 'orders.enter_contact_name'), keyboard);
     return true;
 };
 
@@ -308,7 +307,7 @@ const showOrderConfirmation = async (ctx, session) => {
     orderSessions.set(ctx.from.id, session);
 
     await ctx.reply(
-        t(ctx, 'orders.confirm_order', { orderSummary }),
+        global.i18n.t(ctx, 'orders.confirm_order', { orderSummary }),
         getConfirmationKeyboard(ctx, 'order:confirm', 'order:cancel')
     );
 };
@@ -323,7 +322,7 @@ const confirmOrder = async (ctx) => {
         const user = ctx.user;
 
         if (!session || session.step !== 'confirmation') {
-            await ctx.answerCbQuery(t(ctx, 'errors.general'));
+            await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.general'));
             return;
         }
 
@@ -356,7 +355,7 @@ const confirmOrder = async (ctx) => {
 
         await ctx.answerCbQuery();
         await ctx.editMessageText(
-            t(ctx, 'orders.order_created', { orderId: order._id.toString().slice(-6) })
+            global.i18n.t(ctx, 'orders.order_created', { orderId: order._id.toString().slice(-6) })
         );
 
         // Post to group (if enabled)
@@ -366,7 +365,7 @@ const confirmOrder = async (ctx) => {
         const { getMainMenuKeyboard } = require('./common');
         setTimeout(async () => {
             await ctx.reply(
-                t(ctx, 'menu.main_client'),
+                global.i18n.t(ctx, 'menu.main_client'),
                 getMainMenuKeyboard(ctx, user)
             );
         }, 2000);
@@ -380,7 +379,7 @@ const confirmOrder = async (ctx) => {
         });
 
     } catch (error) {
-        await ctx.answerCbQuery(t(ctx, 'errors.general'));
+        await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };
@@ -394,18 +393,18 @@ const cancelOrderCreation = async (ctx) => {
         orderSessions.delete(sessionId);
 
         await ctx.answerCbQuery();
-        await ctx.editMessageText(t(ctx, 'buttons.cancel'));
+        await ctx.editMessageText(global.i18n.t(ctx, 'buttons.cancel'));
 
         // Show main menu
         const { getMainMenuKeyboard } = require('./common');
         setTimeout(async () => {
             await ctx.reply(
-                t(ctx, ctx.user.isDriver() ? 'menu.main_driver' : 'menu.main_client'),
+                global.i18n.t(ctx, ctx.user.isDriver() ? 'menu.main_driver' : 'menu.main_client'),
                 getMainMenuKeyboard(ctx, ctx.user)
             );
         }, 1000);
     } catch (error) {
-        await ctx.answerCbQuery(t(ctx, 'errors.general'));
+        await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };
@@ -420,7 +419,7 @@ const findOrdersForDriver = async (ctx, page = 1) => {
         const skip = (page - 1) * limit;
 
         if (!user.isDriver()) {
-            await ctx.reply(t(ctx, 'errors.access_denied'));
+            await ctx.reply(global.i18n.t(ctx, 'errors.access_denied'));
             return;
         }
 
@@ -439,7 +438,7 @@ const findOrdersForDriver = async (ctx, page = 1) => {
 
         if (orders.length === 0) {
             await ctx.reply(
-                t(ctx, 'orders.no_orders_found'),
+                global.i18n.t(ctx, 'orders.no_orders_found'),
                 getBackButton(ctx, 'menu:main')
             );
             return;
@@ -490,12 +489,12 @@ const findOrdersForDriver = async (ctx, page = 1) => {
             }
         }
 
-        keyboard.push([{ text: t(ctx, 'buttons.back'), callback_data: 'menu:main' }]);
+        keyboard.push([{ text: global.i18n.t(ctx, 'buttons.back'), callback_data: 'menu:main' }]);
 
         await ctx.reply(messageText, { reply_markup: { inline_keyboard: keyboard } });
 
     } catch (error) {
-        await ctx.reply(t(ctx, 'errors.general'));
+        await ctx.reply(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };
@@ -508,7 +507,7 @@ const viewOrderDetails = async (ctx, orderId) => {
         const order = await Order.findById(orderId).populate('clientId', 'profile');
 
         if (!order) {
-            await ctx.answerCbQuery(t(ctx, 'errors.order_not_found'));
+            await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.order_not_found'));
             return;
         }
 
@@ -524,23 +523,23 @@ const viewOrderDetails = async (ctx, orderId) => {
 
             if (!alreadyInterested && ctx.user.canTakeMoreOrders()) {
                 keyboard.push([{
-                    text: t(ctx, 'orders.interested_button'),
+                    text: global.i18n.t(ctx, 'orders.interested_button'),
                     callback_data: `order:interest:${orderId}`
                 }]);
             } else if (alreadyInterested) {
                 keyboard.push([{
-                    text: t(ctx, 'orders.already_interested'),
+                    text: global.i18n.t(ctx, 'orders.already_interested'),
                     callback_data: 'noop'
                 }]);
             } else {
                 keyboard.push([{
-                    text: t(ctx, 'orders.cannot_take_more'),
+                    text: global.i18n.t(ctx, 'orders.cannot_take_more'),
                     callback_data: 'noop'
                 }]);
             }
         }
 
-        keyboard.push([{ text: t(ctx, 'buttons.back'), callback_data: 'driver:find_orders' }]);
+        keyboard.push([{ text: global.i18n.t(ctx, 'buttons.back'), callback_data: 'driver:find_orders' }]);
 
         await ctx.answerCbQuery();
         await ctx.editMessageText(
@@ -549,7 +548,7 @@ const viewOrderDetails = async (ctx, orderId) => {
         );
 
     } catch (error) {
-        await ctx.answerCbQuery(t(ctx, 'errors.general'));
+        await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };
@@ -563,23 +562,23 @@ const showInterestInOrder = async (ctx, orderId) => {
         const user = ctx.user;
 
         if (!order || !order.canBeMatched()) {
-            await ctx.answerCbQuery(t(ctx, 'errors.order_not_found'));
+            await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.order_not_found'));
             return;
         }
 
         if (!user.canTakeMoreOrders()) {
-            await ctx.answerCbQuery(t(ctx, 'orders.cannot_take_more'));
+            await ctx.answerCbQuery(global.i18n.t(ctx, 'orders.cannot_take_more'));
             return;
         }
 
         // Add driver to interested list
         await order.addInterestedDriver(user._id);
 
-        await ctx.answerCbQuery(t(ctx, 'orders.interest_sent'));
+        await ctx.answerCbQuery(global.i18n.t(ctx, 'orders.interest_sent'));
 
         // Notify client about interested driver
         const clientId = order.clientId.telegramId;
-        const notification = t(ctx, 'notifications.driver_interested', {
+        const notification = global.i18n.t(ctx, 'notifications.driver_interested', {
             driverName: user.profile.fullName,
             rating: user.reputation.rating.toFixed(1),
             phone: user.profile.phoneNumber || 'Не указан'
@@ -595,7 +594,7 @@ const showInterestInOrder = async (ctx, orderId) => {
         });
 
     } catch (error) {
-        await ctx.answerCbQuery(t(ctx, 'errors.general'));
+        await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };

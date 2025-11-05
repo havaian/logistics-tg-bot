@@ -1,5 +1,3 @@
-const { t } = require('../utils/i18nHelper');
-
 /**
  * Get main menu keyboard based on user role
  * @param {Object} ctx - Telegraf context
@@ -15,33 +13,33 @@ const getMainMenuKeyboard = (ctx, user) => {
 
     if (user.isClient()) {
         keyboard = [
-            [{ text: t(ctx, 'menu.create_order') }],
+            [{ text: global.i18n.t(ctx, 'menu.create_order') }],
             [
-                { text: t(ctx, 'menu.my_deals') },
-                { text: t(ctx, 'menu.my_orders') }
+                { text: global.i18n.t(ctx, 'menu.my_deals') },
+                { text: global.i18n.t(ctx, 'menu.my_orders') }
             ],
             [
-                { text: t(ctx, 'menu.profile') },
-                { text: t(ctx, 'menu.language') }
+                { text: global.i18n.t(ctx, 'menu.profile') },
+                { text: global.i18n.t(ctx, 'menu.language') }
             ]
         ];
     } else if (user.isDriver()) {
         keyboard = [
-            [{ text: t(ctx, 'menu.create_offer') }],
+            [{ text: global.i18n.t(ctx, 'menu.create_offer') }],
             [
-                { text: t(ctx, 'menu.my_deals') },
-                { text: t(ctx, 'menu.my_offers') }
+                { text: global.i18n.t(ctx, 'menu.my_deals') },
+                { text: global.i18n.t(ctx, 'menu.my_offers') }
             ],
             [
-                { text: t(ctx, 'menu.profile') },
-                { text: t(ctx, 'menu.language') }
+                { text: global.i18n.t(ctx, 'menu.profile') },
+                { text: global.i18n.t(ctx, 'menu.language') }
             ]
         ];
     } else {
         // Fallback for users without role
         keyboard = [
-            [{ text: t(ctx, 'menu.profile') }],
-            [{ text: t(ctx, 'menu.language') }]
+            [{ text: global.i18n.t(ctx, 'menu.profile') }],
+            [{ text: global.i18n.t(ctx, 'menu.language') }]
         ];
     }
 
@@ -62,7 +60,7 @@ const getLanguageKeyboard = (ctx) => {
         [{ text: '🇷🇺 Русский' }],
         [{ text: '🇺🇿 O\'zbek' }],
         [{ text: '🇺🇸 English' }],
-        [{ text: t(ctx, 'buttons.back') }]
+        [{ text: global.i18n.t(ctx, 'buttons.back') }]
     ];
 
     return {
@@ -80,7 +78,7 @@ const getLanguageKeyboard = (ctx) => {
  */
 const showMainMenu = async (ctx, user, message = null) => {
     try {
-        const menuMessage = message || t(ctx, user.isDriver() ? 'menu.main_driver' : 'menu.main_client');
+        const menuMessage = message || global.i18n.t(ctx, user.isDriver() ? 'menu.main_driver' : 'menu.main_client');
         const keyboard = getMainMenuKeyboard(ctx, user);
 
         await ctx.reply(menuMessage, { reply_markup: keyboard });
@@ -91,7 +89,7 @@ const showMainMenu = async (ctx, user, message = null) => {
         });
     } catch (error) {
         global.logger.logError('Error showing main menu:', ctx, error);
-        await ctx.reply(t(ctx, 'errors.general'));
+        await ctx.reply(global.i18n.t(ctx, 'errors.general'));
     }
 };
 
@@ -112,7 +110,7 @@ const handleKeyboardMenu = async (ctx) => {
         // Handle menu selections
         switch (messageText) {
             // Order/Offer creation
-            case t(ctx, 'menu.create_order'):
+            case global.i18n.t(ctx, 'menu.create_order'):
                 if (user.isClient()) {
                     const orderHandlers = require('./orders');
                     await orderHandlers.startOrderCreation(ctx);
@@ -120,7 +118,7 @@ const handleKeyboardMenu = async (ctx) => {
                 }
                 break;
 
-            case t(ctx, 'menu.create_offer'):
+            case global.i18n.t(ctx, 'menu.create_offer'):
                 if (user.isDriver()) {
                     const driverHandlers = require('./drivers');
                     await driverHandlers.startOfferCreation(ctx);
@@ -129,12 +127,12 @@ const handleKeyboardMenu = async (ctx) => {
                 break;
 
             // Deals and Orders/Offers
-            case t(ctx, 'menu.my_deals'):
+            case global.i18n.t(ctx, 'menu.my_deals'):
                 const matchingHandlers = require('./matching');
                 await matchingHandlers.showMyDeals(ctx);
                 return true;
 
-            case t(ctx, 'menu.my_orders'):
+            case global.i18n.t(ctx, 'menu.my_orders'):
                 if (user.isClient()) {
                     const orderHandlers = require('./orders');
                     await orderHandlers.showMyOrders(ctx);
@@ -142,7 +140,7 @@ const handleKeyboardMenu = async (ctx) => {
                 }
                 break;
 
-            case t(ctx, 'menu.my_offers'):
+            case global.i18n.t(ctx, 'menu.my_offers'):
                 if (user.isDriver()) {
                     const driverHandlers = require('./drivers');
                     await driverHandlers.showMyOffers(ctx);
@@ -151,12 +149,12 @@ const handleKeyboardMenu = async (ctx) => {
                 break;
 
             // Profile and Settings
-            case t(ctx, 'menu.profile'):
+            case global.i18n.t(ctx, 'menu.profile'):
                 const profileHandlers = require('./profile');
                 await profileHandlers.showProfile(ctx);
                 return true;
 
-            case t(ctx, 'menu.language'):
+            case global.i18n.t(ctx, 'menu.language'):
                 await showLanguageMenu(ctx);
                 return true;
 
@@ -174,7 +172,7 @@ const handleKeyboardMenu = async (ctx) => {
                 return true;
 
             // Back button
-            case t(ctx, 'buttons.back'):
+            case global.i18n.t(ctx, 'buttons.back'):
                 await showMainMenu(ctx, user);
                 return true;
 
@@ -198,7 +196,7 @@ const showLanguageMenu = async (ctx) => {
         const keyboard = getLanguageKeyboard(ctx);
 
         await ctx.reply(
-            t(ctx, 'language.select'),
+            global.i18n.t(ctx, 'language.select'),
             { reply_markup: keyboard }
         );
 
@@ -207,7 +205,7 @@ const showLanguageMenu = async (ctx) => {
         });
     } catch (error) {
         global.logger.logError('Error showing language menu:', ctx, error);
-        await ctx.reply(t(ctx, 'errors.general'));
+        await ctx.reply(global.i18n.t(ctx, 'errors.general'));
     }
 };
 
@@ -228,7 +226,7 @@ const changeLanguage = async (ctx, locale) => {
         ctx.locale = locale;
 
         await ctx.reply(
-            t(ctx, 'language.changed'),
+            global.i18n.t(ctx, 'language.changed'),
             { reply_markup: { remove_keyboard: true } }
         );
 
@@ -243,7 +241,7 @@ const changeLanguage = async (ctx, locale) => {
         });
     } catch (error) {
         global.logger.logError('Error changing language:', ctx, error);
-        await ctx.reply(t(ctx, 'errors.general'));
+        await ctx.reply(global.i18n.t(ctx, 'errors.general'));
     }
 };
 
@@ -254,7 +252,7 @@ const changeLanguage = async (ctx, locale) => {
  */
 const removeKeyboard = async (ctx, message = null) => {
     try {
-        const text = message || t(ctx, 'keyboard.removed');
+        const text = message || global.i18n.t(ctx, 'keyboard.removed');
         await ctx.reply(text, { reply_markup: { remove_keyboard: true } });
     } catch (error) {
         global.logger.logError('Error removing keyboard:', ctx, error);
@@ -269,17 +267,17 @@ const removeKeyboard = async (ctx, message = null) => {
  */
 const isKeyboardMenuItem = (messageText, ctx) => {
     const menuItems = [
-        t(ctx, 'menu.create_order'),
-        t(ctx, 'menu.create_offer'),
-        t(ctx, 'menu.my_deals'),
-        t(ctx, 'menu.my_orders'),
-        t(ctx, 'menu.my_offers'),
-        t(ctx, 'menu.profile'),
-        t(ctx, 'menu.language'),
+        global.i18n.t(ctx, 'menu.create_order'),
+        global.i18n.t(ctx, 'menu.create_offer'),
+        global.i18n.t(ctx, 'menu.my_deals'),
+        global.i18n.t(ctx, 'menu.my_orders'),
+        global.i18n.t(ctx, 'menu.my_offers'),
+        global.i18n.t(ctx, 'menu.profile'),
+        global.i18n.t(ctx, 'menu.language'),
         '🇷🇺 Русский',
         '🇺🇿 O\'zbek',
         '🇺🇸 English',
-        t(ctx, 'buttons.back')
+        global.i18n.t(ctx, 'buttons.back')
     ];
 
     return menuItems.includes(messageText);
@@ -292,7 +290,7 @@ const isKeyboardMenuItem = (messageText, ctx) => {
  */
 const getBackKeyboard = (ctx) => {
     return {
-        keyboard: [[{ text: t(ctx, 'buttons.back') }]],
+        keyboard: [[{ text: global.i18n.t(ctx, 'buttons.back') }]],
         resize_keyboard: true,
         one_time_keyboard: true
     };

@@ -5,4 +5,6 @@ const t = (ctx, key, interpolations = {}) => {
     return i18n.t(key, locale, interpolations);
 };
 
+global.i18n = { t };
+
 module.exports = { t };

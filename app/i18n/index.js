@@ -35,7 +35,7 @@ class I18n {
         });
     }
 
-    t(key, locale = this.defaultLocale, interpolations = {}) {
+    global.i18n.t(key, locale = this.defaultLocale, interpolations = {}) {
         const messages = this.locales[locale] || this.locales[this.fallbackLocale];
         const value = this.getNestedValue(messages, key);
 

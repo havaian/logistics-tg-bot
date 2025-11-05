@@ -1,6 +1,4 @@
 const User = require('../models/user');
-const { t } = require('../utils/i18nHelper');
-
 /**
  * Get or create user (simplified version)
  */
@@ -48,15 +46,15 @@ const getDriverMenuKeyboard = (ctx) => {
         reply_markup: {
             inline_keyboard: [
                 [
-                    { text: t(ctx, 'menu.find_orders'), callback_data: 'driver:find_orders' },
-                    { text: t(ctx, 'menu.my_orders'), callback_data: 'driver:my_orders' }
+                    { text: global.i18n.t(ctx, 'menu.find_orders'), callback_data: 'driver:find_orders' },
+                    { text: global.i18n.t(ctx, 'menu.my_orders'), callback_data: 'driver:my_orders' }
                 ],
                 [
-                    { text: t(ctx, 'menu.my_profile'), callback_data: 'profile:view' },
-                    { text: t(ctx, 'menu.settings'), callback_data: 'settings:main' }
+                    { text: global.i18n.t(ctx, 'menu.my_profile'), callback_data: 'profile:view' },
+                    { text: global.i18n.t(ctx, 'menu.settings'), callback_data: 'settings:main' }
                 ],
                 [
-                    { text: t(ctx, 'buttons.help'), callback_data: 'help:main' }
+                    { text: global.i18n.t(ctx, 'buttons.help'), callback_data: 'help:main' }
                 ]
             ]
         }
@@ -71,15 +69,15 @@ const getClientMenuKeyboard = (ctx) => {
         reply_markup: {
             inline_keyboard: [
                 [
-                    { text: t(ctx, 'menu.create_order'), callback_data: 'client:create_order' },
-                    { text: t(ctx, 'menu.my_orders'), callback_data: 'client:my_orders' }
+                    { text: global.i18n.t(ctx, 'menu.create_order'), callback_data: 'client:create_order' },
+                    { text: global.i18n.t(ctx, 'menu.my_orders'), callback_data: 'client:my_orders' }
                 ],
                 [
-                    { text: t(ctx, 'menu.my_profile'), callback_data: 'profile:view' },
-                    { text: t(ctx, 'menu.settings'), callback_data: 'settings:main' }
+                    { text: global.i18n.t(ctx, 'menu.my_profile'), callback_data: 'profile:view' },
+                    { text: global.i18n.t(ctx, 'menu.settings'), callback_data: 'settings:main' }
                 ],
                 [
-                    { text: t(ctx, 'buttons.help'), callback_data: 'help:main' }
+                    { text: global.i18n.t(ctx, 'buttons.help'), callback_data: 'help:main' }
                 ]
             ]
         }
@@ -111,7 +109,7 @@ const getBackButton = (ctx, callbackData = 'menu:main') => {
     return {
         reply_markup: {
             inline_keyboard: [
-                [{ text: t(ctx, 'buttons.back'), callback_data: callbackData }]
+                [{ text: global.i18n.t(ctx, 'buttons.back'), callback_data: callbackData }]
             ]
         }
     };
@@ -125,8 +123,8 @@ const getConfirmationKeyboard = (ctx, yesCallback, noCallback = 'cancel') => {
         reply_markup: {
             inline_keyboard: [
                 [
-                    { text: t(ctx, 'buttons.yes'), callback_data: yesCallback },
-                    { text: t(ctx, 'buttons.no'), callback_data: noCallback }
+                    { text: global.i18n.t(ctx, 'buttons.yes'), callback_data: yesCallback },
+                    { text: global.i18n.t(ctx, 'buttons.no'), callback_data: noCallback }
                 ]
             ]
         }
@@ -164,7 +162,7 @@ const getPaginationKeyboard = (ctx, currentPage, totalPages, baseCallback) => {
         keyboard.push(row);
     }
 
-    keyboard.push([{ text: t(ctx, 'buttons.back'), callback_data: 'menu:main' }]);
+    keyboard.push([{ text: global.i18n.t(ctx, 'buttons.back'), callback_data: 'menu:main' }]);
 
     return { reply_markup: { inline_keyboard: keyboard } };
 };
@@ -177,7 +175,7 @@ const formatUserInfo = (user, ctx) => {
     const phone = user.profile.phoneNumber || 'Не указан';
     const location = user.driverInfo?.currentLocation || 'Не указано';
 
-    let info = t(ctx, 'profile.info', {
+    let info = global.i18n.t(ctx, 'profile.info', {
         fullName: user.profile.fullName,
         birthYear: user.profile.birthYear || 'Не указан',
         role: role,
@@ -191,7 +189,7 @@ const formatUserInfo = (user, ctx) => {
 
     if (user.isDriver() && user.driverInfo.vehicleModel) {
         const vehicleCategory = user.driverInfo.vehicleCategory || 'Не указана';
-        info += t(ctx, 'profile.vehicle_info', {
+        info += global.i18n.t(ctx, 'profile.vehicle_info', {
             vehicleModel: user.driverInfo.vehicleModel,
             vehicleCategory: vehicleCategory
         });
@@ -212,9 +210,9 @@ const formatOrderSummary = (order, ctx) => {
     const price = order.cargo.price ? `${order.cargo.price} сум` : 'По договоренности';
     const description = order.cargo.description || 'Не указано';
     const contact = order.contactInfo?.contactName || 'См. профиль';
-    const status = t(ctx, `status.${order.status}`);
+    const status = global.i18n.t(ctx, `status.${order.status}`);
 
-    return t(ctx, 'orders.order_details', {
+    return global.i18n.t(ctx, 'orders.order_details', {
         orderId: order._id.toString().slice(-6),
         from,
         to,

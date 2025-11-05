@@ -97,7 +97,7 @@ class RedisService {
      * @param {object} state - State object
      * @param {number} ttl - Time to live in seconds (default: 1 hour)
      */
-    async setUserState(userId, state, ttl = 3600) {
+    async setUserState(userId, state, ttl = 86400) {
         try {
             if (!this.isReady()) {
                 throw new Error('Redis not connected');

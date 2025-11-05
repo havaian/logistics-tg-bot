@@ -1,6 +1,5 @@
 const User = require('../models/user');
 const Order = require('../models/order');
-const { t } = require('../utils/i18nHelper');
 const {
     getBackButton,
     formatUserInfo,
@@ -17,7 +16,7 @@ const showProfile = async (ctx) => {
         const profileInfo = formatUserInfo(user, ctx);
 
         const keyboard = [
-            [{ text: t(ctx, 'profile.edit_location'), callback_data: 'profile:edit_location' }]
+            [{ text: global.i18n.t(ctx, 'profile.edit_location'), callback_data: 'profile:edit_location' }]
         ];
 
         // Add role-specific options
@@ -27,10 +26,10 @@ const showProfile = async (ctx) => {
             ]);
         }
 
-        keyboard.push([{ text: t(ctx, 'buttons.back'), callback_data: 'menu:main' }]);
+        keyboard.push([{ text: global.i18n.t(ctx, 'buttons.back'), callback_data: 'menu:main' }]);
 
         await ctx.reply(
-            t(ctx, 'profile.title') + '\n\n' + profileInfo,
+            global.i18n.t(ctx, 'profile.title') + '\n\n' + profileInfo,
             { reply_markup: { inline_keyboard: keyboard } }
         );
 
@@ -40,7 +39,7 @@ const showProfile = async (ctx) => {
         });
 
     } catch (error) {
-        await ctx.reply(t(ctx, 'errors.general'));
+        await ctx.reply(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };
@@ -60,7 +59,7 @@ const showMyOrders = async (ctx, page = 1) => {
 
         if (orders.length === 0) {
             await ctx.reply(
-                t(ctx, 'orders.no_orders'),
+                global.i18n.t(ctx, 'orders.no_orders'),
                 getBackButton(ctx, 'menu:main')
             );
             return;
@@ -72,7 +71,7 @@ const showMyOrders = async (ctx, page = 1) => {
             const orderNum = skip + index + 1;
             const isClient = order.clientId._id.toString() === user._id.toString();
             const role = isClient ? '📦 Заказчик' : '🚛 Водитель';
-            const status = t(ctx, `status.${order.status}`);
+            const status = global.i18n.t(ctx, `status.${order.status}`);
 
             messageText += `${orderNum}. ${order.summary}\n`;
             messageText += `   ${role} | ${status}\n`;
@@ -114,12 +113,12 @@ const showMyOrders = async (ctx, page = 1) => {
             }
         }
 
-        keyboard.push([{ text: t(ctx, 'buttons.back'), callback_data: 'menu:main' }]);
+        keyboard.push([{ text: global.i18n.t(ctx, 'buttons.back'), callback_data: 'menu:main' }]);
 
         await ctx.reply(messageText, { reply_markup: { inline_keyboard: keyboard } });
 
     } catch (error) {
-        await ctx.reply(t(ctx, 'errors.general'));
+        await ctx.reply(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };
@@ -135,7 +134,7 @@ const viewMyOrder = async (ctx, orderId) => {
             .populate('driverId', 'profile');
 
         if (!order) {
-            await ctx.answerCbQuery(t(ctx, 'errors.order_not_found'));
+            await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.order_not_found'));
             return;
         }
 
@@ -144,7 +143,7 @@ const viewMyOrder = async (ctx, orderId) => {
             (order.driverId && order.driverId._id.toString() === user._id.toString());
 
         if (!hasAccess) {
-            await ctx.answerCbQuery(t(ctx, 'errors.access_denied'));
+            await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.access_denied'));
             return;
         }
 
@@ -194,7 +193,7 @@ const viewMyOrder = async (ctx, orderId) => {
             }]);
         }
 
-        keyboard.push([{ text: t(ctx, 'buttons.back'), callback_data: 'myorders:1' }]);
+        keyboard.push([{ text: global.i18n.t(ctx, 'buttons.back'), callback_data: 'myorders:1' }]);
 
         await ctx.answerCbQuery();
         await ctx.editMessageText(
@@ -203,7 +202,7 @@ const viewMyOrder = async (ctx, orderId) => {
         );
 
     } catch (error) {
-        await ctx.answerCbQuery(t(ctx, 'errors.general'));
+        await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };
@@ -219,7 +218,7 @@ const showInterestedDrivers = async (ctx, orderId) => {
             .populate('interestedDrivers.driverId', 'profile reputation driverInfo');
 
         if (!order || order.clientId._id.toString() !== user._id.toString()) {
-            await ctx.answerCbQuery(t(ctx, 'errors.access_denied'));
+            await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.access_denied'));
             return;
         }
 
@@ -253,7 +252,7 @@ const showInterestedDrivers = async (ctx, orderId) => {
             }]);
         });
 
-        keyboard.push([{ text: t(ctx, 'buttons.back'), callback_data: `myorder:view:${orderId}` }]);
+        keyboard.push([{ text: global.i18n.t(ctx, 'buttons.back'), callback_data: `myorder:view:${orderId}` }]);
 
         await ctx.answerCbQuery();
         await ctx.editMessageText(
@@ -262,7 +261,7 @@ const showInterestedDrivers = async (ctx, orderId) => {
         );
 
     } catch (error) {
-        await ctx.answerCbQuery(t(ctx, 'errors.general'));
+        await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };
@@ -277,12 +276,12 @@ const selectDriverForOrder = async (ctx, orderId, driverId) => {
         const driver = await User.findById(driverId);
 
         if (!order || !driver) {
-            await ctx.answerCbQuery(t(ctx, 'errors.order_not_found'));
+            await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.order_not_found'));
             return;
         }
 
         if (order.clientId.toString() !== user._id.toString()) {
-            await ctx.answerCbQuery(t(ctx, 'errors.access_denied'));
+            await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.access_denied'));
             return;
         }
 
@@ -320,7 +319,7 @@ const selectDriverForOrder = async (ctx, orderId, driverId) => {
         });
 
     } catch (error) {
-        await ctx.answerCbQuery(t(ctx, 'errors.general'));
+        await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };
@@ -336,7 +335,7 @@ const completeOrder = async (ctx, orderId) => {
             .populate('driverId', 'profile');
 
         if (!order) {
-            await ctx.answerCbQuery(t(ctx, 'errors.order_not_found'));
+            await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.order_not_found'));
             return;
         }
 
@@ -344,7 +343,7 @@ const completeOrder = async (ctx, orderId) => {
         const isDriver = order.driverId && order.driverId._id.toString() === user._id.toString();
 
         if (!isClient && !isDriver) {
-            await ctx.answerCbQuery(t(ctx, 'errors.access_denied'));
+            await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.access_denied'));
             return;
         }
 
@@ -403,7 +402,7 @@ const completeOrder = async (ctx, orderId) => {
         });
 
     } catch (error) {
-        await ctx.answerCbQuery(t(ctx, 'errors.general'));
+        await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };
@@ -417,12 +416,12 @@ const cancelOrder = async (ctx, orderId) => {
         const order = await Order.findById(orderId);
 
         if (!order) {
-            await ctx.answerCbQuery(t(ctx, 'errors.order_not_found'));
+            await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.order_not_found'));
             return;
         }
 
         if (order.clientId.toString() !== user._id.toString()) {
-            await ctx.answerCbQuery(t(ctx, 'errors.access_denied'));
+            await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.access_denied'));
             return;
         }
 
@@ -449,7 +448,7 @@ const cancelOrder = async (ctx, orderId) => {
         });
 
     } catch (error) {
-        await ctx.answerCbQuery(t(ctx, 'errors.general'));
+        await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };
@@ -470,7 +469,7 @@ const startLocationEdit = async (ctx) => {
         await ctx.user.save();
 
     } catch (error) {
-        await ctx.answerCbQuery(t(ctx, 'errors.general'));
+        await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };
@@ -509,7 +508,7 @@ const handleLocationUpdate = async (ctx) => {
 
         return true;
     } catch (error) {
-        await ctx.reply(t(ctx, 'errors.general'));
+        await ctx.reply(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };

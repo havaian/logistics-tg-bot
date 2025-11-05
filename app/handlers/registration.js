@@ -1,5 +1,4 @@
 const User = require('../models/user');
-const { t } = require('../utils/i18nHelper');
 
 /**
  * Get or create user and check registration status
@@ -46,12 +45,12 @@ const startRegistration = async (ctx) => {
 
         // Show role selection
         const keyboard = [
-            [{ text: t(ctx, 'registration.role_driver'), callback_data: 'reg:role:driver' }],
-            [{ text: t(ctx, 'registration.role_client'), callback_data: 'reg:role:client' }]
+            [{ text: global.i18n.t(ctx, 'registration.role_driver'), callback_data: 'reg:role:driver' }],
+            [{ text: global.i18n.t(ctx, 'registration.role_client'), callback_data: 'reg:role:client' }]
         ];
 
         await ctx.reply(
-            t(ctx, 'start.choose_role'),
+            global.i18n.t(ctx, 'start.choose_role'),
             { reply_markup: { inline_keyboard: keyboard } }
         );
 
@@ -78,12 +77,12 @@ const handleRoleSelection = async (ctx) => {
 
         await ctx.answerCbQuery();
         await ctx.editMessageText(
-            t(ctx, 'registration.role_selected', { role: t(ctx, `registration.role_${role}`) })
+            global.i18n.t(ctx, 'registration.role_selected', { role: global.i18n.t(ctx, `registration.role_${role}`) })
         );
 
         // Ask for first name
         setTimeout(async () => {
-            await ctx.reply(t(ctx, 'registration.enter_first_name'));
+            await ctx.reply(global.i18n.t(ctx, 'registration.enter_first_name'));
         }, 500);
 
         global.logger.logAction('user_selected_role', {
@@ -91,7 +90,7 @@ const handleRoleSelection = async (ctx) => {
             role: role
         });
     } catch (error) {
-        await ctx.answerCbQuery(t(ctx, 'errors.general'));
+        await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };
@@ -137,20 +136,20 @@ const handlePersonalInfo = async (ctx, user, messageText) => {
             user.profile.firstName = messageText.trim();
             user.personalInfoStep = 'last_name';
             await user.save();
-            await ctx.reply(t(ctx, 'registration.enter_last_name'));
+            await ctx.reply(global.i18n.t(ctx, 'registration.enter_last_name'));
             return true;
         } else if (user.personalInfoStep === 'last_name') {
             user.profile.lastName = messageText.trim();
             user.personalInfoStep = 'birth_year';
             await user.save();
-            await ctx.reply(t(ctx, 'registration.enter_birth_year'));
+            await ctx.reply(global.i18n.t(ctx, 'registration.enter_birth_year'));
             return true;
         } else if (user.personalInfoStep === 'birth_year') {
             const year = parseInt(messageText);
             const currentYear = new Date().getFullYear();
 
             if (isNaN(year) || year < 1900 || year > currentYear - 16) {
-                await ctx.reply(t(ctx, 'registration.invalid_year'));
+                await ctx.reply(global.i18n.t(ctx, 'registration.invalid_year'));
                 return true;
             }
 
@@ -161,7 +160,7 @@ const handlePersonalInfo = async (ctx, user, messageText) => {
             if (user.isDriver()) {
                 user.registrationStep = 'vehicle_info';
                 await user.save();
-                await ctx.reply(t(ctx, 'registration.enter_vehicle_model'));
+                await ctx.reply(global.i18n.t(ctx, 'registration.enter_vehicle_model'));
             } else {
                 user.registrationStep = 'contact';
                 await user.save();
@@ -188,14 +187,14 @@ const handleVehicleInfo = async (ctx, user, messageText) => {
 
             // Show vehicle category selection
             const keyboard = [
-                [{ text: t(ctx, 'registration.vehicle_categories.light'), callback_data: 'reg:vehicle:light' }],
-                [{ text: t(ctx, 'registration.vehicle_categories.medium'), callback_data: 'reg:vehicle:medium' }],
-                [{ text: t(ctx, 'registration.vehicle_categories.heavy'), callback_data: 'reg:vehicle:heavy' }],
-                [{ text: t(ctx, 'registration.vehicle_categories.special'), callback_data: 'reg:vehicle:special' }]
+                [{ text: global.i18n.t(ctx, 'registration.vehicle_categories.light'), callback_data: 'reg:vehicle:light' }],
+                [{ text: global.i18n.t(ctx, 'registration.vehicle_categories.medium'), callback_data: 'reg:vehicle:medium' }],
+                [{ text: global.i18n.t(ctx, 'registration.vehicle_categories.heavy'), callback_data: 'reg:vehicle:heavy' }],
+                [{ text: global.i18n.t(ctx, 'registration.vehicle_categories.special'), callback_data: 'reg:vehicle:special' }]
             ];
 
             await ctx.reply(
-                t(ctx, 'registration.choose_vehicle_category'),
+                global.i18n.t(ctx, 'registration.choose_vehicle_category'),
                 { reply_markup: { inline_keyboard: keyboard } }
             );
             return true;
@@ -227,18 +226,18 @@ const handleVehicleCategory = async (ctx) => {
 
         await ctx.answerCbQuery();
         await ctx.editMessageText(
-            t(ctx, 'registration.choose_vehicle_category') + '\n\n' +
-            t(ctx, `registration.vehicle_categories.${category}`)
+            global.i18n.t(ctx, 'registration.choose_vehicle_category') + '\n\n' +
+            global.i18n.t(ctx, `registration.vehicle_categories.${category}`)
         );
 
         // Ask for current location
         setTimeout(async () => {
-            await ctx.reply(t(ctx, 'registration.enter_current_location'));
+            await ctx.reply(global.i18n.t(ctx, 'registration.enter_current_location'));
         }, 500);
 
         return true;
     } catch (error) {
-        await ctx.answerCbQuery(t(ctx, 'errors.general'));
+        await ctx.answerCbQuery(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };
@@ -248,11 +247,11 @@ const handleVehicleCategory = async (ctx) => {
  */
 const requestContact = async (ctx) => {
     const keyboard = [
-        [{ text: t(ctx, 'registration.contact_button'), request_contact: true }]
+        [{ text: global.i18n.t(ctx, 'registration.contact_button'), request_contact: true }]
     ];
 
     await ctx.reply(
-        t(ctx, 'registration.share_contact'),
+        global.i18n.t(ctx, 'registration.share_contact'),
         {
             reply_markup: {
                 keyboard: keyboard,
@@ -276,7 +275,7 @@ const handleContactStep = async (ctx, user) => {
 
             // Remove keyboard and show completion message
             await ctx.reply(
-                t(ctx, 'start.registration_completed'),
+                global.i18n.t(ctx, 'start.registration_completed'),
                 { reply_markup: { remove_keyboard: true } }
             );
 
@@ -284,7 +283,7 @@ const handleContactStep = async (ctx, user) => {
             setTimeout(async () => {
                 const { getMainMenuKeyboard } = require('./common');
                 await ctx.reply(
-                    t(ctx, user.isDriver() ? 'menu.main_driver' : 'menu.main_client'),
+                    global.i18n.t(ctx, user.isDriver() ? 'menu.main_driver' : 'menu.main_client'),
                     getMainMenuKeyboard(ctx, user)
                 );
             }, 1000);
@@ -312,7 +311,7 @@ const requireRegistration = async (ctx, next) => {
         const user = await getOrCreateUser(ctx);
 
         if (!user.registrationCompleted) {
-            await ctx.reply(t(ctx, 'errors.registration_required'));
+            await ctx.reply(global.i18n.t(ctx, 'errors.registration_required'));
             await startRegistration(ctx);
             return;
         }
@@ -320,7 +319,7 @@ const requireRegistration = async (ctx, next) => {
         ctx.user = user; // Add user to context
         return next();
     } catch (error) {
-        await ctx.reply(t(ctx, 'errors.general'));
+        await ctx.reply(global.i18n.t(ctx, 'errors.general'));
         throw error;
     }
 };

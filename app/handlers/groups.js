@@ -1,5 +1,3 @@
-const { t } = require('../utils/i18nHelper');
-
 /**
  * Configuration for Telegram groups where orders should be posted
  * Add your group chat IDs here when ready

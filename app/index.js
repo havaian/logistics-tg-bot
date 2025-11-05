@@ -9,7 +9,7 @@ require('./logger');
 const redisService = require('./services/redisService');
 
 // Import the translation helper
-const { t } = require('./utils/i18nHelper');
+require('./utils/i18nHelper');
 
 // Import all handlers
 const registrationHandlers = require('./handlers/registration');
@@ -101,7 +101,7 @@ const userMiddleware = async (ctx, next) => {
         return next();
     } catch (error) {
         global.logger.logError(error, ctx, { context: 'User middleware error' });
-        await ctx.reply(t(ctx, 'errors.general'));
+        await ctx.reply(global.i18n.t(ctx, 'errors.general'));
     }
 };
 
@@ -117,13 +117,13 @@ const handleStart = async (ctx) => {
 
         // If user is already registered, show main menu
         if (user && user.registrationCompleted) {
-            await keyboardMenus.showMainMenu(ctx, user, t(ctx, 'start.welcome_back'));
+            await keyboardMenus.showMainMenu(ctx, user, global.i18n.t(ctx, 'start.welcome_back'));
             return;
         }
 
         // Start registration for new users
         await ctx.reply(
-            t(ctx, 'start.welcome'),
+            global.i18n.t(ctx, 'start.welcome'),
             { reply_markup: { remove_keyboard: true } }
         );
 
@@ -137,14 +137,14 @@ const handleStart = async (ctx) => {
         });
     } catch (error) {
         global.logger.logError(error, ctx, { context: 'Start handler error', userId: ctx.from.id });
-        await ctx.reply(t(ctx, 'errors.general'));
+        await ctx.reply(global.i18n.t(ctx, 'errors.general'));
     }
 };
 
 // Help handler
 const handleHelp = async (ctx) => {
     try {
-        const helpMessage = t(ctx, 'help.message');
+        const helpMessage = global.i18n.t(ctx, 'help.message');
         await ctx.reply(helpMessage);
 
         global.logger.logAction('user_requested_help', {
@@ -153,7 +153,7 @@ const handleHelp = async (ctx) => {
         });
     } catch (error) {
         global.logger.logError(error, ctx, { context: 'Help handler error', userId: ctx.from.id });
-        await ctx.reply(t(ctx, 'errors.general'));
+        await ctx.reply(global.i18n.t(ctx, 'errors.general'));
     }
 };
 
@@ -169,7 +169,7 @@ bot.command('menu', userMiddleware, async (ctx) => {
     if (ctx.user && ctx.user.registrationCompleted) {
         await keyboardMenus.showMainMenu(ctx, ctx.user);
     } else {
-        await ctx.reply(t(ctx, 'errors.registration_required'));
+        await ctx.reply(global.i18n.t(ctx, 'errors.registration_required'));
     }
 });
 
@@ -223,21 +223,21 @@ bot.on('message', async (ctx, next) => {
 
         // Check if it's a valid menu item but user isn't registered
         if (keyboardMenus.isKeyboardMenuItem(messageText, ctx)) {
-            await ctx.reply(t(ctx, 'errors.registration_required'));
+            await ctx.reply(global.i18n.t(ctx, 'errors.registration_required'));
             return;
         }
 
         // Default response for unrecognized messages
         if (user && user.registrationCompleted) {
             await ctx.reply(
-                t(ctx, 'errors.unknown_command'),
+                global.i18n.t(ctx, 'errors.unknown_command'),
                 { reply_markup: keyboardMenus.getMainMenuKeyboard(ctx, user) }
             );
         }
 
     } catch (error) {
         global.logger.logError(error, ctx, { context: 'Message handler error' });
-        await ctx.reply(t(ctx, 'errors.general'));
+        await ctx.reply(global.i18n.t(ctx, 'errors.general'));
     }
 });
 
@@ -247,7 +247,7 @@ bot.catch((err, ctx) => {
     global.logger.logError('Bot error:', ctx, err);
 
     if (ctx && ctx.reply) {
-        ctx.reply(t(ctx, 'errors.general')).catch(() => {
+        ctx.reply(global.i18n.t(ctx, 'errors.general')).catch(() => {
             // Ignore reply errors
         });
     }

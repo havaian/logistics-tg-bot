@@ -1,6 +1,5 @@
 const User = require('../models/user');
 const Order = require('../models/order');
-const { t } = require('../utils/i18nHelper');
 const { calculateDistance } = require('./common');
 
 /**
@@ -131,7 +130,7 @@ const getMatchingDriversForOrder = async (order, ctx) => {
         if (matches.length === 0) {
             return {
                 found: false,
-                message: t(ctx, 'matching.no_drivers'),
+                message: global.i18n.t(ctx, 'matching.no_drivers'),
                 drivers: []
             };
         }
@@ -156,7 +155,7 @@ const getMatchingDriversForOrder = async (order, ctx) => {
 
             drivers.push(driverInfo);
 
-            driversText += t(ctx, 'matching.driver_info', {
+            driversText += global.i18n.t(ctx, 'matching.driver_info', {
                 name: driverInfo.name,
                 rating: driverInfo.rating.toFixed(1),
                 vehicle: driverInfo.vehicle,
@@ -166,7 +165,7 @@ const getMatchingDriversForOrder = async (order, ctx) => {
 
         return {
             found: true,
-            message: t(ctx, 'matching.found_drivers', { drivers: driversText }),
+            message: global.i18n.t(ctx, 'matching.found_drivers', { drivers: driversText }),
             drivers: drivers
         };
 
@@ -174,7 +173,7 @@ const getMatchingDriversForOrder = async (order, ctx) => {
         global.logger.global.logger.logError('Error getting matching drivers:', ctx, error);
         return {
             found: false,
-            message: t(ctx, 'errors.general'),
+            message: global.i18n.t(ctx, 'errors.general'),
             drivers: []
         };
     }
@@ -195,7 +194,7 @@ const notifyRelevantDrivers = async (order, ctx) => {
             return;
         }
 
-        const notificationText = t(ctx, 'notifications.new_order_available', {
+        const notificationText = global.i18n.t(ctx, 'notifications.new_order_available', {
             orderSummary: order.summary
         });
 
